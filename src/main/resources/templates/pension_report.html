@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>National Pension Scheme - National Bank Limited</title>
+    <link href="css/styles.css" rel="stylesheet"/>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.png"/>
+    <style>
+        .header-container {
+            text-align: center;
+            margin-top: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Top Navigation -->
+<nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white"
+     id="sidenavAccordion">
+    <div th:insert="~{fragments/header :: header}"></div>
+</nav>
+
+<!-- Main Content Area -->
+<main class="flex-grow-1">
+    <div class="header-container">
+        <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-5 pt-5">
+            <div class="container-xl">
+                <div class="page-header-content">
+                    <div class="row justify-content-center text-center">
+                        <div class="col-auto">
+                            <h1 class="page-header-title justify-content-center">
+                                <div class="page-header-icon"><i data-feather="file-text"></i></div>
+                                Pension Report
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <div class="container-xl card-container">
+        <div class="row justify-content-center">
+            <div class="card shadow-lg p-4 mb-4 pb-20" style="max-width: 1450px; width: 100%;">
+                <div class="card-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="Transaction_Date_From" id="dateLabelfrom">*From (dd/mm/yyyy)</label>
+                                <input type="date" class="form-control" id="Transaction_Date_From"
+                                       name="Transaction_Date_From">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="Transaction_Date_To" id="dateLabelto">*To (dd/mm/yyyy)</label>
+                                <input type="date" class="form-control" id="Transaction_Date_To"
+                                       name="Transaction_Date_To">
+                            </div>
+                        </div>
+                        <div class="text-start">
+                            <button type="button" class="btn btn-success"><i data-feather="eye"></i> <b>Show</b>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer (Sticky to bottom) -->
+<footer th:insert="~{fragments/footer :: footer}" class="mt-auto"></footer>
+
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/scripts.js"></script>
+<script src="js/fontawesome_all.min.js"></script>
+<script src="js/feather.min.js"></script>
+</body>
+</html>

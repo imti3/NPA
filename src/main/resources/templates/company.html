@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="">
+<head>
+    <title>National Pension Scheme - National Bank Limited</title>
+    <link href="css/styles.css" rel="stylesheet"/>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/fontawesome_all.min.js"></script>
+    <script src="js/feather.min.js"></script>
+
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.png"/>
+
+</head>
+<style>
+    .header-container {
+        text-align: center;
+        margin-top: 30px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card-container {
+        margin-top: 20px;
+    }
+</style>
+
+<body class="min-vh-100 d-flex flex-column">
+<div class="nav-fixed">
+
+
+    <nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white"
+         id="sidenavAccordion">
+        <div th:insert="~{fragments/header :: header}"></div>
+    </nav>
+</div>
+<main class="flex-grow-1">
+    <!-- Card Container -->
+    <div class="header-container">
+        <header class="page-header page-header-dark bg-gradient-primary-to-secondary pt-5">
+            <div class="container-xl">
+                <div class="page-header-content">
+                    <div class="row justify-content-center align-items-center text-center">
+                        <div class="col-auto">
+                            <h1 class="page-header-title justify-content-center">
+                                <div class="page-header-icon"><i data-feather="award"></i></div>
+                                Pension Scheme Collection
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+        <div class="container-xl card-container mt-0">
+            <div class="row justify-content-center">
+                <div class="card shadow-lg mb-1" style="max-width: 1450px; width: 100%;">
+                    <div class="card-body">
+                        <div th:if="${errorMessage != null}" class="alert alert-danger text-center fw-bold fs-5 mt-4">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span th:text="${errorMessage}">An error occurred.</span>
+                        </div>
+
+                        <div th:if="${invoiceData != null}">
+                            <form>
+                                <div class="row mt-3">
+                                    <!-- Invoice No -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="invoiceNo" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-receipt me-1"></i> Invoice No
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8" id="invoiceNo" name="invoiceNo"
+                                                   th:value="${invoiceData != null ? invoiceData.invoiceNo : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Invoice Date -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="invDate" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-calendar-day me-1"></i> Invoice Date
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8" id="invDate" name="invDate"
+                                                   th:value="${invoiceData != null ? invoiceData.invDate : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment For Month -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="paymentMonth" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-calendar-alt me-1"></i> Payment Month
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8" id="paymentMonth" name="paymentMonth"
+                                                   th:value="${invoiceData != null ? invoiceData.paymentForMonth : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Total Employees -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="totalEmp" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-users me-1"></i> Total Employees
+                                            </label>
+                                            <input type="number" class="form-control fw-bold fs-8" id="totalEmp" name="totalEmp"
+                                                   th:value="${invoiceData != null ? invoiceData.totalEmp : ''}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!-- Total Amount -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="totalAmount" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-coins me-1"></i> Total Amount
+                                            </label>
+                                            <input type="number" class="form-control fw-bold fs-8" id="totalAmount" name="totalAmount"
+                                                   th:value="${invoiceData != null ? invoiceData.totalAmount : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Company PID -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="companyPID" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-building me-1"></i> Company PID
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8" id="companyPID" name="companyPID"
+                                                   th:value="${invoiceData != null ? invoiceData.companyPID : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Company Title -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="comapnyTitle" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-industry me-1"></i> Company Name
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8" id="comapnyTitle" name="comapnyTitle"
+                                                   th:value="${invoiceData != null ? invoiceData.comapnyTitle : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Economic Code -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="economicCode" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-code me-1"></i> Economic Code
+                                            </label>
+                                            <input type="number" class="form-control fw-bold fs-8" id="economicCode" name="economicCode"
+                                                   th:value="${invoiceData != null ? invoiceData.economicCode : ''}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!-- Contact Person -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="contactPerson" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-user-tie me-1"></i> Contact Person
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8" id="contactPerson" name="contactPerson"
+                                                   th:value="${invoiceData != null ? invoiceData.contactPerson : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contact Mobile -->
+                                    <div class="col-md-3">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="contactMobile" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-phone-square-alt me-1"></i> Contact Mobile
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8" id="contactMobile" name="contactMobile"
+                                                   th:value="${invoiceData != null ? invoiceData.contactMobile : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Company Address -->
+                                    <div class="col-md-6">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label for="companyAddress" class="fw-bold text-primary fs-8 d-flex align-items-center">
+                                                <i class="fas fa-map-marker-alt me-1"></i> Company Address
+                                            </label>
+                                            <textarea class="form-control fw-bold fs-8" id="companyAddress" name="companyAddress"
+                                                      rows="2" disabled
+                                                      th:text="${invoiceData != null ? invoiceData.companyAddress : ''}"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+// DOM Elements
+        const nidInput = document.getElementById('nid');
+        const payablePerInstallment = parseFloat(document.getElementById('payable_per_installment').value) || 0;
+        const grandTotalDueAmountInput = document.getElementById('grand_total_due_amount');
+        const advanceInstallmentsInput = document.getElementById('advance_installments');
+        const advancePaymentTotalInput = document.getElementById('advance_payment_total');
+        const calculateButton = document.getElementById('calculate_advance_payment');
+        const decreaseButton = document.getElementById('decrease_advance_payment');
+        const submitButton = document.getElementById('submit');
+
+// Store original Grand Total Due Amount
+        const originalGrandTotalDue = parseFloat(grandTotalDueAmountInput.value) || 0;
+
+// Function to calculate and update advance payment
+        function updateAdvancePayment() {
+            const numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
+
+            if (!isValidInstallments(numInstallments)) {
+                alert('Please enter a valid number of installments between 1 and 12.');
+                resetAdvanceFields();
+                return;
+            }
+
+            const totalAdvancePayment = calculateTotalAdvance(numInstallments, payablePerInstallment);
+            advancePaymentTotalInput.value = totalAdvancePayment;
+            grandTotalDueAmountInput.value = originalGrandTotalDue + totalAdvancePayment;
+        }
+
+// Calculate advance payment and update Grand Total (Plus button)
+        calculateButton.addEventListener('click', function () {
+            let numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
+            if (numInstallments < 12) {
+                advanceInstallmentsInput.value = numInstallments + 1;
+                updateAdvancePayment();
+            } else {
+                alert('Maximum limit of 12 installments reached.');
+            }
+        });
+
+// Decrease advance payment (Minus button)
+        decreaseButton.addEventListener('click', function () {
+            let numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
+            if (numInstallments > 0) {
+                advanceInstallmentsInput.value = numInstallments - 1;
+                updateAdvancePayment();
+            }
+        });
+
+// Handle form submission with NID verification
+        submitButton.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const formNID = nidInput.value.trim();
+            const userNID = prompt("Please enter your NID for verification:");
+
+            if (!isValidNID(userNID, formNID)) {
+                alert("NID does not match or is invalid. Submission canceled.");
+                return;
+            }
+
+// If NID matches, proceed with submission
+            submitPayment();
+        });
+
+// Helper Functions
+        function isValidInstallments(num) {
+            return !isNaN(num) && num >= 0 && num <= 12;
+        }
+
+        function calculateTotalAdvance(installments, perInstallment) {
+            return installments * perInstallment;
+        }
+
+        function resetAdvanceFields() {
+            advanceInstallmentsInput.value = '';
+            advancePaymentTotalInput.value = 0;
+            grandTotalDueAmountInput.value = originalGrandTotalDue;
+        }
+
+        function isValidNID(userNID, formNID) {
+            return userNID !== null && userNID.trim() === formNID;
+        }
+
+        function submitPayment() {
+            const numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
+            const totalAdvancePayment = parseFloat(advancePaymentTotalInput.value) || 0;
+            const currentGrandTotalDue = parseFloat(grandTotalDueAmountInput.value);
+
+            const message = numInstallments > 0
+                ? `Payment submitted successfully!\nAdvance Installments: ${numInstallments}\nAdvance Amount: ${totalAdvancePayment} BDT\nGrand Total Due Amount: ${currentGrandTotalDue} BDT`
+                : `Payment submitted successfully!\nGrand Total Due Amount: ${currentGrandTotalDue} BDT`;
+
+            alert(message);
+
+// Reset fields after submission
+            resetAdvanceFields();
+        }
+    });
+</script>
+</html>

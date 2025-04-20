@@ -1,0 +1,42 @@
+<!-- src/main/resources/templates/fragments/header.html -->
+<div th:fragment="header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="d-flex justify-content-between">
+        <!-- Logo Section -->
+        <a class="ps-10" href="/" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="assets/img/Logo.png" alt="National Bank Limited" style="height: 60px;">
+        </a>
+
+        <!-- 💡 Navbar Menu -->
+        <ul class="navbar-nav flex-row align-items-center ps-4 gap-3" style="list-style: none; margin: 10px;">
+
+            <li class="nav-item">
+                <a href="/" class="nav-link custom-nav-link">Home</a>
+            </li>
+
+            <li class="nav-item">
+                <a href="/pension_collect" class="nav-link custom-nav-link">Pension Collection</a>
+            </li>
+
+            <li class="nav-item">
+                <a href="/pension_verify" class="nav-link custom-nav-link">Pension Verify</a>
+            </li>
+
+            <li class="nav-item">
+                <a href="/pension_report" class="nav-link custom-nav-link">Reports</a>
+            </li>
+
+        </ul>
+
+
+        <div class="login-info ps-10 justify-content-center align-items-center" style="margin: 20px 0 0 0;">
+            <div class="login-user-name"><b>User:</b> <span
+                    class="text-green font-weight-bold w-35"> Imtiajul.it</span> | <b>Branch:</b>
+                <span
+                        class="text-green font-weight-bold w-35"> Information Technology Division</span> | <a href="#"
+                                                                                                              class="logout-btn"><span
+                        class="text-red font-weight-bold w-35"> <i class="fa fa-sign-out"></i> Logout</span></a></div>
+        </div>
+
+    </div>
+
+</div>

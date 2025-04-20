@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Receipt - National Pension</title>
+    <link href="css/styles.css" rel="stylesheet"/>
+    <script src="js/fontawesome_all.min.js"></script>
+
+    <style>
+        .receipt-card {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .receipt-header h2 {
+            font-weight: 700;
+            color: #198754;
+        }
+
+        .receipt-item {
+            font-size: 16px;
+        }
+
+        .btn-print {
+            margin-top: 30px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            .receipt-card, .receipt-card * {
+                visibility: visible;
+            }
+
+            .receipt-card {
+                margin: 0;
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+
+            .btn-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div th:if="${paymentData != null}" class="receipt-card">
+        <div class="receipt-header">
+            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+            <h2>Payment Successful</h2>
+            <p class="text-muted">Thank you for your payment. Below is your payment receipt.</p>
+            <hr>
+        </div>
+
+        <ul class="list-group mb-4">
+            <li class="list-group-item receipt-item">
+                <strong><i class="fas fa-id-card me-2"></i>Pensioner ID:</strong>
+                <span class="float-end" th:text="${paymentData != null ? paymentData.getData().getPid() : ''}"></span>
+            </li>
+
+            <li class="list-group-item receipt-item">
+                <strong><i class="fas fa-money-bill-wave me-2"></i>Paid Installment Amount:</strong>
+                <span class="float-end" th:text="${paymentData != null ? paymentData.getData().getInstallPaidAmount() + ' BDT' : ''}"></span>
+            </li>
+
+            <li class="list-group-item receipt-item">
+                <strong><i class="fas fa-list-ol me-2"></i>Total Installments Paid:</strong>
+                <span class="float-end" th:text="${paymentData != null ? paymentData.getData().getInstallPaidCount() : ''}"></span>
+            </li>
+
+            <li class="list-group-item receipt-item">
+                <strong><i class="fas fa-calendar-alt me-2"></i>Next Due Date:</strong>
+                <span class="float-end" th:text="${paymentData != null ? paymentData.getData().getNextDueDate() : ''}"></span>
+            </li>
+
+            <li class="list-group-item receipt-item">
+                <strong><i class="fas fa-receipt me-2"></i>Transaction ID:</strong>
+                <span class="float-end" th:text="${paymentData.internalTransactionId != null ? paymentData.internalTransactionId : paymentData.transactionId}"></span>
+            </li>
+        </ul>
+
+        <div class="text-center">
+            <a href="/" class="btn btn-outline-success rounded-pill px-4 me-2">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <button class="btn btn-success rounded-pill px-4 btn-print" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Receipt
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${errorMessage != null}" class="alert alert-danger mt-5 shadow-sm border-start border-4 border-danger rounded-4">
+        <h4 class="alert-heading fw-bold"><i class="fas fa-exclamation-circle me-2"></i>Payment Failed!</h4>
+        <p th:text="${errorMessage}"></p>
+        <div class="text-center mt-4">
+            <a href="/pension_collect" class="btn btn-outline-danger rounded-pill px-4">
+                <i class="fas fa-redo-alt"></i> Try Again
+            </a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

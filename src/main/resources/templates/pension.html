@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>National Pension Scheme - National Bank Limited</title>
+    <link href="css/styles.css" rel="stylesheet"/>
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.png"/>
+
+</head>
+<style>
+    .header-container {
+        text-align: center;
+        margin-top: 30px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card-container {
+        margin-top: 20px;
+    }
+</style>
+
+<body class="min-vh-100 d-flex flex-column">
+<div class="nav-fixed">
+
+
+    <nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white"
+         id="sidenavAccordion">
+        <div th:insert="~{fragments/header :: header}"></div>
+    </nav>
+</div>
+
+
+<!--<a class="py-5 justify-content-center" style="display: flex; align-items: center; text-decoration: none;">-->
+<!--    <img src="assets/img/NPA.svg" alt="NPA" style="height: 100px;">-->
+<!--</a>-->
+<main class="flex-grow-1">
+    <!-- Card Container -->
+    <div class="header-container">
+        <header class="page-header page-header-dark bg-gradient-primary-to-secondary pt-5">
+            <div class="container-xl">
+                <div class="page-header-content">
+                    <div class="row justify-content-center align-items-center text-center">
+                        <div class="col-auto">
+                            <h1 class="page-header-title justify-content-center">
+                                <div class="page-header-icon"><i data-feather="award"></i></div>
+                                Pension Scheme Collection
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container-xl card-container mt-0">
+            <div class="row justify-content-center">
+                <div class="card shadow-lg mb-1" style="max-width: 1450px; width: 100%;">
+                    <div class="card-body">
+                        <!-- Form with Multiple Steps -->
+                        <form method="post" id="pensionForm" onsubmit="return handleSubmit()" action="/initial">
+                            <!-- Step 1 -->
+                            <div id="step1" class="container my-5">
+                                <div class="row g-1 justify-content-center">
+                                    <!-- Card 1: Pensioner Type -->
+                                    <div class="col-md-4">
+                                        <div class="card shadow-sm border-0 rounded-4">
+                                            <div class="card-body px-4">
+                                                <div class="mb-2 text-start">
+                                                    <label for="PensionerType"
+                                                           class="form-label fw-bold text-green mb-2">Pensioner
+                                                        Type</label>
+                                                </div>
+                                                <div class="input-group rounded-3">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fas fa-user-friends text-info fs-5"></i>
+                        </span>
+                                                    <select class="form-select border-0 shadow-none" id="PensionerType"
+                                                            name="type" onchange="updatePensionerType()">
+                                                        <option value="individual">Individual</option>
+                                                        <option value="company">Company</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--Card for company invoice no  Need Only For Company-->
+                                    <div class="col-md-4" id="CompanyInvoice" style="display: none;">
+                                        <div class="card shadow-sm border-0 rounded-4">
+                                            <div class="card-body px-4">
+                                                <div class="mb-2 text-start">
+                                                    <label for="invoiceNO"
+                                                           class="form-label fw-bold text-green mb-2" id="invoiceNO">
+                                                        Company Invoice Number</label>
+                                                </div>
+                                                <div class="input-group rounded-3">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fas fa-receipt text-success fs-5"></i>
+                        </span>
+                                                    <input type="text" class="form-control border-0 shadow-none"
+                                                           id="invoiceNOInput" name="invoiceNOInput"
+                                                           placeholder="Enter Invoice Number"
+                                                           oncopy="return false" onpaste="return false"
+                                                           oncut="return false">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Card 3: ID Input -->
+                                    <div class="col-md-4">
+                                        <div class="card shadow-sm border-0 rounded-4">
+                                            <div class="card-body px-4">
+                                                <div class="mb-2 text-start">
+                                                    <label for="exampleFormControlTextarea1"
+                                                           class="form-label fw-bold text-green mb-2" id="inputLabel">ID
+                                                        Number</label>
+                                                </div>
+                                                <div class="input-group rounded-3">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="fas fa-keyboard text-success fs-5"></i>
+                        </span>
+                                                    <input type="text" class="form-control border-0 shadow-none"
+                                                           id="exampleFormControlTextarea1" name="idNumber"
+                                                           placeholder="Enter NID/PID Number"
+                                                           oncopy="return false"
+                                                           oncut="return false">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="notice" class="alert alert-danger py-2 px-3 mt-3 mb-0 border-start border-4 border-danger rounded-3 small">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
+                                            <strong>Important:</strong> For 13-digit NID number, please include the applicant's Birth Year before the NID (e.g., <code>19901234567890123</code>).
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center pt-4">
+                                    <button type="submit" class="btn btn-success">Next</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--    <span th:text="${token}">Token here</span>-->
+
+
+</main>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+
+
+</body>
+
+
+<!-- JavaScript for Wizard Navigation -->
+<script>
+    function handleSubmit() {
+        const pensionerType = document.getElementById("PensionerType").value;
+        const form = document.getElementById("pensionForm");
+
+        const invoiceInput = document.getElementById("invoiceNOInput")?.value.trim();
+        const idNumber = document.getElementById("exampleFormControlTextarea1").value.trim();
+
+        if (pensionerType === "company") {
+            if (!invoiceInput) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Invoice Number',
+                    text: 'Please enter the invoice number for the company pensioner.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#198754'
+                });
+                return false;
+            }
+
+            if (!idNumber) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Pension ID',
+                    text: 'Please provide the Pension Scheme ID.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#198754'
+                });
+                return false;
+            }
+
+            form.action = "/initial_company";
+        } else {
+            if (!idNumber) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing ID Number',
+                    text: 'Please enter your NID or PID number to continue.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#198754'
+                });
+                return false;
+            }
+
+            form.action = "/initial";
+        }
+
+        return true; // Submit allowed
+    }
+
+
+    function updatePensionerType() {
+        const pensionerType = document.getElementById('PensionerType').value;
+        const CompanyInvoice = document.getElementById('CompanyInvoice');
+        //const secondDropdown = document.getElementById('IDType');
+        const Notice = document.getElementById('notice');
+        const inputLabel = document.getElementById('inputLabel');
+        const inputField = document.getElementById('exampleFormControlTextarea1');
+
+        if (pensionerType === 'company') {
+            Notice.style.display = 'none';
+            CompanyInvoice.style.display = 'block';
+            inputField.placeholder = 'Enter Pension Scheme ID';
+            inputLabel.textContent = 'Enter Pension Scheme ID (PID)';
+        } else {
+            // When another option is selected, show the second dropdown
+            CompanyInvoice.style.display = 'none';
+            Notice.style.display = 'block';
+            inputField.placeholder = 'Enter Pension Scheme ID/NID/Passport ID';
+            inputLabel.textContent = 'Enter Pension Scheme ID/NID/Passport ID';
+        }
+    }
+    updatePensionerType();
+
+
+
+</script>
+
+
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="@{/js/scripts.js}"></script>
+<script src="js/fontawesome_all.min.js"></script>
+<script src="js/feather.min.js"></script>
+<script src="js/sweetalert2@11.js"></script>
+</html>
