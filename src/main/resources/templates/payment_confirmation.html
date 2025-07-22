@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Payment Receipt - National Pension</title>
-    <link href="css/styles.css" rel="stylesheet"/>
-    <script src="js/fontawesome_all.min.js"></script>
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <script src="/js/fontawesome_all.min.js"></script>
 
     <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
         .receipt-card {
             max-width: 800px;
-            margin: auto;
+            margin: 50px auto;
             padding: 30px;
             border-radius: 15px;
             background: white;
@@ -34,7 +40,23 @@
             margin-top: 30px;
         }
 
+        .footer-text {
+            display: none;
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
         @media print {
+            body, html {
+                margin: 0;
+                padding: 0;
+                height: auto;
+                overflow: visible;
+                background: white;
+            }
+
             body * {
                 visibility: hidden;
             }
@@ -52,15 +74,25 @@
             .btn-print {
                 display: none;
             }
+
+            .footer-text {
+                visibility: visible;
+                position: fixed;
+                bottom: 10px;
+                width: 100%;
+                text-align: center;
+                font-size: 12px;
+                color: #6c757d;
+            }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
+<div class="container">
 
     <div th:if="${paymentData != null}" class="receipt-card">
-        <div class="receipt-header">
+        <div class="receipt-header text-center">
             <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
             <h2>Payment Successful</h2>
             <p class="text-muted">Thank you for your payment. Below is your payment receipt.</p>
@@ -70,34 +102,31 @@
         <ul class="list-group mb-4">
             <li class="list-group-item receipt-item">
                 <strong><i class="fas fa-id-card me-2"></i>Pensioner ID:</strong>
-                <span class="float-end" th:text="${paymentData != null ? paymentData.getData().getPid() : ''}"></span>
+                <span class="float-end" th:text="${paymentData != null ? paymentData.getPid() : ''}"></span>
             </li>
 
             <li class="list-group-item receipt-item">
                 <strong><i class="fas fa-money-bill-wave me-2"></i>Paid Installment Amount:</strong>
-                <span class="float-end" th:text="${paymentData != null ? paymentData.getData().getInstallPaidAmount() + ' BDT' : ''}"></span>
+                <span class="float-end" th:text="${paymentData != null ? paymentData.getPaidAmount() + ' BDT' : ''}"></span>
             </li>
 
             <li class="list-group-item receipt-item">
                 <strong><i class="fas fa-list-ol me-2"></i>Total Installments Paid:</strong>
-                <span class="float-end" th:text="${paymentData != null ? paymentData.getData().getInstallPaidCount() : ''}"></span>
+                <span class="float-end" th:text="${paymentData?.paidCount != null ? paymentData.paidCount : 'N/A'}"></span>
             </li>
 
             <li class="list-group-item receipt-item">
                 <strong><i class="fas fa-calendar-alt me-2"></i>Next Due Date:</strong>
-                <span class="float-end" th:text="${paymentData != null ? paymentData.getData().getNextDueDate() : ''}"></span>
+                <span class="float-end" th:text="${paymentData != null ? paymentData.getNextDueDate() : ''}"></span>
             </li>
 
             <li class="list-group-item receipt-item">
                 <strong><i class="fas fa-receipt me-2"></i>Transaction ID:</strong>
-                <span class="float-end" th:text="${paymentData.internalTransactionId != null ? paymentData.internalTransactionId : paymentData.transactionId}"></span>
+                <span class="float-end" th:text="${paymentData != null ? paymentData.bankTxnId : ''}"></span>
             </li>
         </ul>
 
         <div class="text-center">
-            <a href="/" class="btn btn-outline-success rounded-pill px-4 me-2">
-                <i class="fas fa-home"></i> Home
-            </a>
             <button class="btn btn-success rounded-pill px-4 btn-print" onclick="window.print()">
                 <i class="fas fa-print"></i> Print Receipt
             </button>
@@ -115,6 +144,11 @@
         </div>
     </div>
 
+</div>
+
+<!-- Footer for both screen and print -->
+<div class="footer-text">
+    Powered by National Bank PLC. ITD
 </div>
 
 </body>

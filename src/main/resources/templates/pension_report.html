@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>National Pension Scheme - National Bank Limited</title>
-    <link href="css/styles.css" rel="stylesheet"/>
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.png"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pension Report</title>
+    <link href="/css/styles.css" rel="stylesheet"/>
+<!--    <link rel="icon" type="image/x-icon" href="/assets/favicon.png"/>-->
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/select2.min.js"></script>
+
     <style>
         .header-container {
             text-align: center;
@@ -15,70 +21,134 @@
         .card-container {
             margin-top: 20px;
         }
+
+        .table td, .table th {
+            padding: 4px 8px;
+            line-height: 1;
+            height: 20px;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+
+
+
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+
+            .modal-footer {
+                display: none !important;
+            }
+
+            #printPopupModal, #printPopupModal * {
+                visibility: visible !important;
+            }
+
+            #printPopupModal {
+                position: static !important;
+                width: 100% !important;
+                background: white !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 10px !important;
+                overflow: visible !important;
+                page-break-before: always;
+                page-break-inside: avoid;
+                transform: scale(0.75);
+                transform-origin: 0 0;
+            }
+
+            #printPopupModal * {
+                font-size: 12px !important;
+                line-height: 1.2 !important;
+            }
+
+            .modal-backdrop {
+                display: none !important;
+            }
+
+            @page {
+                size: auto;
+                margin: 0 !important;
+            }
+        }
     </style>
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="min-vh-100 d-flex flex-column">
 
-<!-- Top Navigation -->
-<nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white"
-     id="sidenavAccordion">
-    <div th:insert="~{fragments/header :: header}"></div>
-</nav>
+<!-- Header -->
+<div class="nav-fixed">
+    <nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white"
+         id="sidenavAccordion">
+        <div th:insert="~{fragments/header :: header}"></div>
+    </nav>
+</div>
 
-<!-- Main Content Area -->
-<main class="flex-grow-1">
-    <div class="header-container">
-        <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-5 pt-5">
-            <div class="container-xl">
-                <div class="page-header-content">
-                    <div class="row justify-content-center text-center">
-                        <div class="col-auto">
-                            <h1 class="page-header-title justify-content-center">
-                                <div class="page-header-icon"><i data-feather="file-text"></i></div>
-                                Pension Report
-                            </h1>
-                        </div>
+<!-- Main Content -->
+<main class="flex-grow-1 py-4">
+    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pt-5">
+        <div class="container-xl">
+            <div class="page-header-content">
+                <div class="row justify-content-center align-items-center text-center">
+                    <div class="col-auto">
+                        <h1 class="page-header-title justify-content-center">
+                            <div class="page-header-icon"><i class="fa fa-file-text" aria-hidden="true"></i></div>
+                            Pension Report
+                        </h1>
                     </div>
                 </div>
             </div>
-        </header>
-    </div>
+        </div>
+    </header>
 
-    <div class="container-xl card-container">
-        <div class="row justify-content-center">
-            <div class="card shadow-lg p-4 mb-4 pb-20" style="max-width: 1450px; width: 100%;">
-                <div class="card-body">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="Transaction_Date_From" id="dateLabelfrom">*From (dd/mm/yyyy)</label>
-                                <input type="date" class="form-control" id="Transaction_Date_From"
-                                       name="Transaction_Date_From">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="Transaction_Date_To" id="dateLabelto">*To (dd/mm/yyyy)</label>
-                                <input type="date" class="form-control" id="Transaction_Date_To"
-                                       name="Transaction_Date_To">
-                            </div>
-                        </div>
-                        <div class="text-start">
-                            <button type="button" class="btn btn-success"><i data-feather="eye"></i> <b>Show</b>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+    <div class="container-xl card-container mt-0 pt-2">
+        <div class="card">
+            <div class="card-body p-4 header-container">
+                <!-- Search Form -->
+                <form th:action="@{/report-print}" method="post" class="row g-3 mb-4" target="_blank">
+                    <div class="col-md-4">
+                        <label for="reportId" class="form-label">Report</label>
+                        <select id="reportId" name="reportId" class="form-select select2 form-control" required>
+                            <option value="">Select Report</option>
+                            <option th:each="report : ${reportList}"
+                                    th:value="${report.id}"
+                                    th:text="${report.reprotTitle}"></option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="fromDate" class="form-label">From Date</label>
+                        <input type="date" id="fromDate" name="fromDate" class="form-control"
+                               th:value="${{fromDate}}" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="toDate" class="form-label">To Date</label>
+                        <input type="date" id="toDate" name="toDate" class="form-control"
+                               th:value="${{toDate}}" required>
+                    </div>
+
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success px-4">Generate Report</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </main>
 
-<!-- Footer (Sticky to bottom) -->
-<footer th:insert="~{fragments/footer :: footer}" class="mt-auto"></footer>
+<!-- Footer -->
+<div th:insert="~{fragments/footer :: footer}"></div>
 
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/scripts.js"></script>
-<script src="js/fontawesome_all.min.js"></script>
-<script src="js/feather.min.js"></script>
+
+
+<!-- Scripts -->
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/fontawesome_all.min.js"></script>
+<script src="/js/feather.min.js"></script>
+<script src="/js/sweetalert2@11.js"></script>
 </body>
 </html>

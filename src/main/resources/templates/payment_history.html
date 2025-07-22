@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment History</title>
+
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.png"/>
+    <link href="/css/styles.css" rel="stylesheet"/>
+
+    <style>
+        .card-container {
+            margin-top: 20px;
+        }
+        .table td, .table th {
+            padding: 4px 8px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="min-vh-100 d-flex flex-column">
+
+<div class="nav-fixed">
+    <nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white"
+         id="sidenavAccordion">
+        <div th:insert="~{fragments/header :: header}"></div>
+    </nav>
+</div>
+
+<main class="flex-grow-1">
+    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pt-5">
+        <div class="container-xl">
+            <div class="page-header-content d-flex flex-column align-items-center text-center">
+                <h1 class="page-header-title d-flex flex-column align-items-center">
+                    <span>Payment History</span>
+                </h1>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="container-xl card-container pt-2">
+        <div class="card">
+            <div class="card-body p-4">
+                <form th:action="@{/payment_history}" method="get" class="row g-3 mb-4">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="paymentType" class="form-label">Payment Type</label>
+                            <select id="paymentType" name="paymentType" class="form-select">
+                                <option value="individual" th:selected="${paymentType == 'individual'}">Individual</option>
+                                <option value="company" th:selected="${paymentType == 'company'}">Company</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="nid" class="form-label">NID</label>
+                            <input id="nid" name="nid" class="form-control" th:value="${nid}" />
+                        </div>
+                        <div class="col-md-2">
+                            <label for="pid" class="form-label">PID</label>
+                            <input id="pid" name="pid" class="form-control" th:value="${pid}" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="BankTxnId" class="form-label">Bank Txn ID</label>
+                            <input id="BankTxnId" name="bankTxnId" class="form-control" th:value="${bankTxnId}" />
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-success px-4">Search</button>
+                        </div>
+                    </div>
+                </form>
+
+
+                <!-- Individual Payment Table -->
+                <div class="table-responsive" th:if="${paymentType == 'individual'}">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Bank Trx ID</th>
+                            <th>PID</th>
+                            <th>NID</th>
+                            <th>Payable Per Installment</th>
+                            <th>Advance Count</th>
+                            <th>Advance Amount</th>
+                            <th>Paid Amount</th>
+                            <th>Paid Count</th>
+                            <th>Entry By</th>
+                            <th>Entry Date</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="payment, stat : ${individualPaymentPage.content}">
+                            <td th:text="${stat.index + 1 + (individualPaymentPage.number * individualPaymentPage.size)}"></td>
+                            <td th:text="${payment.bankTxnId} ?: 'N/A'"></td>
+                            <td th:text="${payment.pid}"></td>
+                            <td th:text="${payment.nid}"></td>
+                            <td th:text="${payment.payablePerInstallment}"></td>
+                            <td th:text="${payment.advanceInstallmentCount}"></td>
+                            <td th:text="${payment.advanceInstallmentAmount}"></td>
+                            <td th:text="${payment.paidAmount}"></td>
+                            <td th:text="${payment.paidCount}"></td>
+                            <td th:text="${payment.entryBy}"></td>
+                            <td th:text="${#temporals.format(payment.entryDate, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td>
+                                <span th:if="${payment.transactionStatus == 1}" class="text-success">Success</span>
+                                <span th:unless="${payment.transactionStatus == 1}" class="text-danger">Failed</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${individualPaymentPage.totalElements == 0}">
+                            <td colspan="12" class="text-center text-muted">No records found.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination for individual -->
+                    <nav th:if="${individualPaymentPage.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li th:classappend="${individualPaymentPage.first} ? 'disabled'" class="page-item">
+                                <a class="page-link" th:href="@{/payment_history(page=${individualPaymentPage.number - 1}, nid=${nid}, pid=${pid}, paymentType='individual', bankTxnId=${bankTxnId})}">Previous</a>
+                            </li>
+                            <li th:each="i : ${#numbers.sequence(0, individualPaymentPage.totalPages - 1)}"
+                                th:classappend="${i == individualPaymentPage.number} ? 'active'" class="page-item">
+                                <a class="page-link" th:href="@{/payment_history(page=${i}, nid=${nid}, pid=${pid}, paymentType='individual', bankTxnId=${bankTxnId})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li th:classappend="${individualPaymentPage.last} ? 'disabled'" class="page-item">
+                                <a class="page-link" th:href="@{/payment_history(page=${individualPaymentPage.number + 1}, nid=${nid}, pid=${pid}, paymentType='individual', bankTxnId=${bankTxnId})}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+
+
+                <!-- Company Payment Table -->
+                <div class="table-responsive" th:if="${paymentType == 'company'}">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Bank Trx ID</th>
+                            <th>Company PID</th>
+                            <th>Company Title</th>
+                            <th>Contact Person</th>
+                            <th>Contact Mobile</th>
+                            <th>Paying Amount</th>
+                            <th>Entry By</th>
+                            <th>Entry Date</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="payment, stat : ${companyPaymentPage.content}">
+                            <td th:text="${stat.index + 1 + (companyPaymentPage.number * companyPaymentPage.size)}"></td>
+                            <td th:text="${payment.bankTxnId} ?: 'N/A'"></td>
+                            <td th:text="${payment.companyPID}"></td>
+                            <td th:text="${payment.companyTitle}"></td>
+                            <td th:text="${payment.contactPerson}"></td>
+                            <td th:text="${payment.contactMobile}"></td>
+                            <td th:text="${payment.payingAmount}"></td>
+                            <td th:text="${payment.entryBy}"></td>
+                            <td th:text="${#temporals.format(payment.entryDate, 'yyyy-MM-dd HH:mm')}"></td>
+                            <td>
+                                <span th:if="${payment.transactionStatus == 1}" class="text-success">Success</span>
+                                <span th:unless="${payment.transactionStatus == 1}" class="text-danger">Failed</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${companyPaymentPage.totalElements == 0}">
+                            <td colspan="10" class="text-center text-muted">No records found.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination for company -->
+                    <nav th:if="${companyPaymentPage.totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li th:classappend="${companyPaymentPage.first} ? 'disabled'" class="page-item">
+                                <a class="page-link" th:href="@{/payment_history(page=${companyPaymentPage.number - 1}, pid=${pid}, paymentType='company', bankTxnId=${bankTxnId})}">Previous</a>
+                            </li>
+                            <li th:each="i : ${#numbers.sequence(0, companyPaymentPage.totalPages - 1)}"
+                                th:classappend="${i == companyPaymentPage.number} ? 'active'" class="page-item">
+                                <a class="page-link" th:href="@{/payment_history(page=${i}, pid=${pid}, paymentType='company', bankTxnId=${bankTxnId})}" th:text="${i + 1}"></a>
+                            </li>
+                            <li th:classappend="${companyPaymentPage.last} ? 'disabled'" class="page-item">
+                                <a class="page-link" th:href="@{/payment_history(page=${companyPaymentPage.number + 1}, pid=${pid}, paymentType='company', bankTxnId=${bankTxnId})}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:insert="~{fragments/footer :: footer}"></div>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/fontawesome_all.min.js"></script>
+</body>
+</html>

@@ -1,42 +1,48 @@
 <!-- src/main/resources/templates/fragments/header.html -->
-<div th:fragment="header" style="display: flex; justify-content: space-between; align-items: center;">
-    <div class="d-flex justify-content-between">
+<div th:fragment="header" class="d-flex justify-content-between align-items-center px-2">
+
+    <!-- Left side: Logo and Navigation -->
+    <div class="d-flex align-items-center">
         <!-- Logo Section -->
-        <a class="ps-10" href="/" style="display: flex; align-items: center; text-decoration: none;">
-            <img src="assets/img/Logo.png" alt="National Bank Limited" style="height: 60px;">
+        <a href="/" class="d-flex align-items-center text-decoration-none">
+            <img src="/assets/img/Logo.png" alt="National Bank PLC." style="height: 60px;">
         </a>
 
-        <!-- 💡 Navbar Menu -->
-        <ul class="navbar-nav flex-row align-items-center ps-4 gap-3" style="list-style: none; margin: 10px;">
-
+        <!-- Navbar Menu -->
+        <ul class="navbar-nav flex-row align-items-center ps-10 gap-3 list-unstyled m-0" style="white-space: nowrap;">
             <li class="nav-item">
                 <a href="/" class="nav-link custom-nav-link">Home</a>
             </li>
-
             <li class="nav-item">
                 <a href="/pension_collect" class="nav-link custom-nav-link">Pension Collection</a>
             </li>
 
             <li class="nav-item">
-                <a href="/pension_verify" class="nav-link custom-nav-link">Pension Verify</a>
+                <a href="/payment_history" class="nav-link custom-nav-link">Payment History</a>
             </li>
 
             <li class="nav-item">
                 <a href="/pension_report" class="nav-link custom-nav-link">Reports</a>
             </li>
-
         </ul>
 
+    </div>
 
-        <div class="login-info ps-10 justify-content-center align-items-center" style="margin: 20px 0 0 0;">
-            <div class="login-user-name"><b>User:</b> <span
-                    class="text-green font-weight-bold w-35"> Imtiajul.it</span> | <b>Branch:</b>
-                <span
-                        class="text-green font-weight-bold w-35"> Information Technology Division</span> | <a href="#"
-                                                                                                              class="logout-btn"><span
-                        class="text-red font-weight-bold w-35"> <i class="fa fa-sign-out"></i> Logout</span></a></div>
+    <!-- Right side: User Info and Logout -->
+    <div class="login-info mb-1 ms-15">
+        <div class="login-user-name ms-5">
+            <b>User:</b>
+            <span class="text-green font-weight-bold" th:text="${userName}">Username</span>
+            |
+            <b>Branch:</b>
+            <span class="text-green font-weight-bold" th:text="${branchName}">Branch Name</span>
+            |
+            <a href="/logout" class="logout-btn text-decoration-none">
+                <span class="text-red font-weight-bold">
+                    <i class="fa fa-sign-out"></i> Logout
+                </span>
+            </a>
         </div>
-
     </div>
 
 </div>

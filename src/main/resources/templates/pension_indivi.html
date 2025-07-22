@@ -2,14 +2,13 @@
 <html lang="en" xmlns="">
 <head>
     <title>National Pension Scheme - National Bank Limited</title>
-    <link href="css/styles.css" rel="stylesheet"/>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/scripts.js"></script>
-    <script src="js/fontawesome_all.min.js"></script>
-    <script src="js/feather.min.js"></script>
-    <script src="js/sweetalert2@11.js"></script>
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/fontawesome_all.min.js"></script>
+    <script src="/js/feather.min.js"></script>
+    <script src="/js/sweetalert2@11.js"></script>
 
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.png"/>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.png"/>
 
 </head>
 <style>
@@ -78,7 +77,7 @@
                     </div>
 
                     <!-- Pensioner NID (Hidden) -->
-                    <div class="col-md-4 d-none">
+                    <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
                             <label for="nid" class="fw-bold text-green fs-8 d-flex align-items-center">
                                 <i class="fas fa-id-card me-1"></i> Pensioner NID
@@ -102,6 +101,10 @@
                     </div>
 
                     <!-- Phone No -->
+
+                </div>
+                <div class="row">
+
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
                             <label for="phone"
@@ -112,8 +115,7 @@
                                    th:value="${pensionData != null ? pensionData.getPhoneNo() : ''}" disabled>
                         </div>
                     </div>
-                </div>
-                <div class="row">
+
                     <!-- Email -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -140,6 +142,11 @@
                         </div>
                     </div>
 
+
+                </div>
+
+                <div class="row">
+
                     <!-- Pay Interval Type -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -152,9 +159,8 @@
                                    disabled>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
+
                     <!-- Payable Per Installment -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -181,6 +187,12 @@
                         </div>
                     </div>
 
+
+                </div>
+
+                <div class="row">
+
+
                     <!-- Currency -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -193,9 +205,8 @@
                                    disabled>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
+
                     <!-- Total Due Install Count -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -222,6 +233,12 @@
                         </div>
                     </div>
 
+
+                </div>
+
+                <div class="row">
+
+
                     <!-- Total Due Loan Count -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -234,9 +251,8 @@
                                    disabled>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
+
                     <!-- Total Due Loan Amount -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -263,6 +279,11 @@
                         </div>
                     </div>
 
+
+                </div>
+
+                <div class="row">
+
                     <!-- Grand Total Due Count -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -275,9 +296,8 @@
                                    disabled>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
+
                     <!-- Advance Installments -->
                     <div class="col-md-4">
                         <div class="mb-1 border rounded p-1 bg-light">
@@ -334,10 +354,62 @@
                     <button type="button" id="submitBtn" class="btn btn-lg btn-green"><b>Pay Now</b></button>
                 </div>
             </div>
-                            <input type="hidden" name="Payment_Ref_No" id="payment_ref_no" th:value="${pensionData != null ? pensionData.creditAccDetails?.paymentRefNo : ''}">
+                                <input type="hidden" name="Payment_Ref_No" id="payment_ref_no"
+                                       th:value="${pensionData != null && pensionData.creditAccDetails != null ? pensionData.creditAccDetails.paymentRefNo : ''}">
+
+                                <input type="hidden" name="PensionHolderName" id="PensionHolderName"
+                                       th:value="${pensionData != null ? pensionData.getPensionHolderName(): ''}">
+
+                                <input type="hidden" name="PensionPhoneNo" id="PensionPhoneNo"
+                                       th:value="${pensionData != null ? pensionData.getPhoneNo(): ''}">
+
+                                <input type="hidden" name="PensionEmail" id="PensionEmail"
+                                       th:value="${pensionData != null ? pensionData.getEmail(): ''}">
+
+
+
+                                <input type="hidden" name="NID" id="NID_hidden" th:value="${pensionData != null ? pensionData.getNid() : ''}">
+                                <input type="hidden" name="InstallAmount" id="InstallAmount_hidden" th:value="${pensionData != null ? pensionData.getInstallAmount() : ''}">
                             <input type="hidden" name="PID" id="pid_hidden" th:value="${pensionData != null ? pensionData.getPid() : ''}">
+
                             <input type="hidden" name="Paying_Install_Count" id="paying_install_count">
-                            <input type="hidden" name="Paying_Install_Amount" id="paying_install_amount">
+                                <input type="hidden" name="Paid_Amount" id="paid_amount_hidden" value="">
+                                <input type="hidden" name="advance_installments" id="hidden_advance_installments"
+                                value="">
+                                <!-- Advance Payment Total -->
+                                <input type="hidden" name="advance_payment_total" id="hidden_advance_payment_total"
+                                value="">
+
+
+                                <input type="hidden" name="GrandTotalDueCount" id="GrandTotalDueCount"
+                                       th:value="${pensionData != null ? pensionData.getGrandTotalDueCount() : ''}">
+
+                                <input type="hidden" name="GrandTotalDueAmount" id="GrandTotalDueAmount"
+                                       th:value="${pensionData != null ? pensionData.getGrandTotalDueAmount() : ''}">
+
+
+
+                                <input type="hidden" name="PayIntervalType" id="PayIntervalType"
+                                   th:value="${pensionData != null ? pensionData.getPayIntervalType() : ''}">
+                                <input type="hidden" name="SchemeName" id="SchemeName"
+                                       th:value="${pensionData != null ? pensionData.getSchemeName() : ''}">
+
+                                <input type="hidden" name="TotalDueInstallCount" id="TotalDueInstallCount"
+                                       th:value="${pensionData != null ? pensionData.getTotalDueInstallCount() : ''}">
+                                <input type="hidden" name="TotalDueInstallAmount" id="TotalDueInstallAmount"
+                                       th:value="${pensionData != null ? pensionData.getTotalDueInstallAmount() : ''}">
+
+                                <input type="hidden" name="TotalDueLoanCount" id="TotalDueLoanCount"
+                                       th:value="${pensionData != null ? pensionData.getTotalDueLoanCount() : ''}">
+
+                                <input type="hidden" name="TotalDueLoanAmount" id="TotalDueLoanAmount"
+                                       th:value="${pensionData != null ? pensionData.getTotalDueLoanAmount() : ''}">
+
+                                <input type="hidden" name="TotalFineAmount" id="TotalFineAmount"
+                                       th:value="${pensionData != null ? pensionData.getTotalFineAmount() : ''}">
+
+                                <input type="hidden" name="Paying_Install_Amount" id="paying_install_amount"
+                                       th:value="${pensionData != null ? pensionData.getPayablePerInstallment() : ''}">
                             <input type="hidden" name="Commission_Amount" value="0">
                             <input type="hidden" name="VAT_Amount" value="0">
                             <input type="hidden" name="CreditAccount" id="credit_account" th:value="${pensionData != null ? pensionData.creditAccDetails?.accNo : ''}">
@@ -425,7 +497,7 @@ updateAdvancePayment();
             submitButton.addEventListener('click', function (event) {
                 event.preventDefault();
 
-                const formNID = nidInput.value.trim();
+                const formName = document.getElementById('name').value.trim().toLowerCase(); // get expected name
                 const rawGrandTotal = grandTotalDueAmountInput.textContent.replace(/[^\d.]/g, '');
                 const currentGrandTotalDue = parseFloat(rawGrandTotal) || 0;
 
@@ -441,10 +513,10 @@ updateAdvancePayment();
                 }
 
                 Swal.fire({
-                    title: 'Verify Your NID',
+                    title: 'Verify Your Name',
                     input: 'text',
-                    inputLabel: 'Please enter your NID to continue',
-                    inputPlaceholder: 'Enter your NID',
+                    inputLabel: 'Please enter your full name to continue',
+                    inputPlaceholder: 'Enter your full name',
                     inputAttributes: {
                         autocapitalize: 'off'
                     },
@@ -454,9 +526,9 @@ updateAdvancePayment();
                     cancelButtonText: 'Cancel',
                     inputValidator: (value) => {
                         if (!value) {
-                            return 'NID cannot be empty!';
-                        } else if (!isValidNID(value, formNID)) {
-                            return 'NID does not match!';
+                            return 'Name cannot be empty!';
+                        } else if (!isValidName(value, formName)) {
+                            return 'Name does not match!';
                         }
                     }
                 }).then((result) => {
@@ -464,7 +536,7 @@ updateAdvancePayment();
                         Swal.fire({
                             icon: 'success',
                             title: 'Verified!',
-                            text: 'NID matched. Proceeding with submission...',
+                            text: 'Name matched. Proceeding with submission...',
                             showConfirmButton: false,
                             timer: 1500
                         });
@@ -475,6 +547,7 @@ updateAdvancePayment();
                     }
                 });
             });
+
 
 
 // Helper Functions
@@ -491,10 +564,24 @@ advanceInstallmentsInput.value = '';
 advancePaymentTotalInput.value = 0;
 grandTotalDueAmountInput.value = currentGrandTotalDue;
 }
+            function isValidName(userInputName, formName) {
+                if (!userInputName || !formName) return false;
 
-function isValidNID(userNID, formNID) {
-return userNID !== null && userNID.trim() === formNID;
-}
+                const input = userInputName.trim().toLowerCase();
+                const fullName = formName.trim().toLowerCase();
+
+                const fullNameWords = fullName.split(/\s+/);
+
+
+                if (fullNameWords.includes(input)) {
+                    return true;
+                }
+
+                return input === fullName;
+            }
+
+
+
             function submitPayment() {
                 const numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
                 const totalAdvancePayment = parseFloat(advancePaymentTotalInput.value) || 0;
@@ -528,7 +615,10 @@ return userNID !== null && userNID.trim() === formNID;
                     if (result.isConfirmed) {
                         // Set hidden fields
                         document.getElementById('paying_install_count').value = originalDueCount + numInstallments;
-                        document.getElementById('paying_install_amount').value = currentGrandTotalDue;
+                        document.getElementById('paid_amount_hidden').value = currentGrandTotalDue;
+
+                        document.getElementById('hidden_advance_installments').value = numInstallments;
+                        document.getElementById('hidden_advance_payment_total').value = totalAdvancePayment;
 
                         // Toast
                         Swal.fire({

@@ -2,13 +2,13 @@
 <html lang="en" xmlns="">
 <head>
     <title>National Pension Scheme - National Bank Limited</title>
-    <link href="css/styles.css" rel="stylesheet"/>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/scripts.js"></script>
-    <script src="js/fontawesome_all.min.js"></script>
-    <script src="js/feather.min.js"></script>
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/fontawesome_all.min.js"></script>
+    <script src="/js/sweetalert2@11.js"></script>
+    <script src="/js/feather.min.js"></script>
 
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.png"/>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.png"/>
 
 </head>
 <style>
@@ -62,137 +62,185 @@
                         </div>
 
                         <div th:if="${invoiceData != null}">
-                            <form>
-                                <div class="row mt-3">
-                                    <!-- Invoice No -->
-                                    <div class="col-md-3">
+                            <form id="companyPaymentForm" th:action="@{/make_company_payment}" method="post">
+                                <div class="row">
+
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="invoiceNo" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-receipt me-1"></i> Invoice No
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-file-invoice me-2"></i> Invoice No
                                             </label>
-                                            <input type="text" class="form-control fw-bold fs-8" id="invoiceNo" name="invoiceNo"
+                                            <input type="text" class="form-control fw-bold fs-8"
                                                    th:value="${invoiceData != null ? invoiceData.invoiceNo : ''}" disabled>
                                         </div>
                                     </div>
 
-                                    <!-- Invoice Date -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="invDate" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-calendar-day me-1"></i> Invoice Date
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-calendar-day me-2"></i> Invoice Date
                                             </label>
-                                            <input type="text" class="form-control fw-bold fs-8" id="invDate" name="invDate"
+                                            <input type="text" class="form-control fw-bold fs-8"
                                                    th:value="${invoiceData != null ? invoiceData.invDate : ''}" disabled>
                                         </div>
                                     </div>
 
-                                    <!-- Payment For Month -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="paymentMonth" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-calendar-alt me-1"></i> Payment Month
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-calendar-alt me-2"></i> Payment For Month
                                             </label>
-                                            <input type="text" class="form-control fw-bold fs-8" id="paymentMonth" name="paymentMonth"
+                                            <input type="text" class="form-control fw-bold fs-8"
                                                    th:value="${invoiceData != null ? invoiceData.paymentForMonth : ''}" disabled>
                                         </div>
                                     </div>
 
-                                    <!-- Total Employees -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="totalEmp" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-users me-1"></i> Total Employees
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-users me-2"></i> Total Employee
                                             </label>
-                                            <input type="number" class="form-control fw-bold fs-8" id="totalEmp" name="totalEmp"
+                                            <input type="number" class="form-control fw-bold fs-8"
                                                    th:value="${invoiceData != null ? invoiceData.totalEmp : ''}" disabled>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <!-- Total Amount -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="totalAmount" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-coins me-1"></i> Total Amount
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-coins me-2"></i> Total Amount
                                             </label>
-                                            <input type="number" class="form-control fw-bold fs-8" id="totalAmount" name="totalAmount"
+                                            <input type="number" class="form-control fw-bold fs-8"
                                                    th:value="${invoiceData != null ? invoiceData.totalAmount : ''}" disabled>
                                         </div>
                                     </div>
 
-                                    <!-- Company PID -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="companyPID" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-building me-1"></i> Company PID
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-id-badge me-2"></i> Company PID
                                             </label>
-                                            <input type="text" class="form-control fw-bold fs-8" id="companyPID" name="companyPID"
+                                            <input type="text" class="form-control fw-bold fs-8"
                                                    th:value="${invoiceData != null ? invoiceData.companyPID : ''}" disabled>
                                         </div>
                                     </div>
 
-                                    <!-- Company Title -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="comapnyTitle" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-industry me-1"></i> Company Name
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-building me-2"></i> Company Title
                                             </label>
-                                            <input type="text" class="form-control fw-bold fs-8" id="comapnyTitle" name="comapnyTitle"
-                                                   th:value="${invoiceData != null ? invoiceData.comapnyTitle : ''}" disabled>
+                                            <input type="text" class="form-control fw-bold fs-8"
+                                                   th:value="${invoiceData != null ? invoiceData.companyTitle : ''}" disabled>
                                         </div>
                                     </div>
 
-                                    <!-- Economic Code -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="economicCode" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-code me-1"></i> Economic Code
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-user-tie me-2"></i> Contact Person
                                             </label>
-                                            <input type="number" class="form-control fw-bold fs-8" id="economicCode" name="economicCode"
-                                                   th:value="${invoiceData != null ? invoiceData.economicCode : ''}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <!-- Contact Person -->
-                                    <div class="col-md-3">
-                                        <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="contactPerson" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-user-tie me-1"></i> Contact Person
-                                            </label>
-                                            <input type="text" class="form-control fw-bold fs-8" id="contactPerson" name="contactPerson"
+                                            <input type="text" class="form-control fw-bold fs-8"
                                                    th:value="${invoiceData != null ? invoiceData.contactPerson : ''}" disabled>
                                         </div>
                                     </div>
 
-                                    <!-- Contact Mobile -->
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="contactMobile" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-phone-square-alt me-1"></i> Contact Mobile
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-phone-alt me-2"></i> Contact Mobile
                                             </label>
-                                            <input type="text" class="form-control fw-bold fs-8" id="contactMobile" name="contactMobile"
+                                            <input type="text" class="form-control fw-bold fs-8"
                                                    th:value="${invoiceData != null ? invoiceData.contactMobile : ''}" disabled>
                                         </div>
                                     </div>
 
-                                    <!-- Company Address -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="mb-1 border rounded p-1 bg-light">
-                                            <label for="companyAddress" class="fw-bold text-primary fs-8 d-flex align-items-center">
-                                                <i class="fas fa-map-marker-alt me-1"></i> Company Address
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-map-marker-alt me-2"></i> Company Address
                                             </label>
-                                            <textarea class="form-control fw-bold fs-8" id="companyAddress" name="companyAddress"
-                                                      rows="2" disabled
-                                                      th:text="${invoiceData != null ? invoiceData.companyAddress : ''}"></textarea>
+                                            <textarea class="form-control fw-bold fs-8" rows="2"
+                                                      disabled th:text="${invoiceData != null ? invoiceData.companyAddress : ''}"></textarea>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-file-code me-2"></i> Economic Code
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8"
+                                                   th:value="${invoiceData != null ? invoiceData.economicCode : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-money-bill me-2"></i> Currency
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8"
+                                                   th:value="${invoiceData != null ? invoiceData.currency : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-puzzle-piece me-2"></i> Scheme Name
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8"
+                                                   th:value="${invoiceData != null ? invoiceData.schemeName : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-credit-card me-2"></i> Credit Account No
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8"
+                                                   th:value="${invoiceData != null ? invoiceData.creditAccDetails.accNo : ''}" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="mb-1 border rounded p-1 bg-light">
+                                            <label class="fw-bold text-green fs-8 d-flex align-items-center">
+                                                <i class="fas fa-random me-2"></i> Payment Ref No
+                                            </label>
+                                            <input type="text" class="form-control fw-bold fs-8"
+                                                   th:value="${invoiceData != null ? invoiceData.creditAccDetails.paymentRefNo : ''}" disabled>
+                                        </div>
+                                    </div>
+
                                 </div>
 
+                                <input type="hidden" name="Payment_Ref_No" th:value="${invoiceData.creditAccDetails.paymentRefNo}" />
+                                <input type="hidden" name="CompanyPID" th:value="${invoiceData.companyPID}" />
+                                <input type="hidden" name="invoiceNo" th:value="${invoiceData.invoiceNo}" />
+                                <input type="hidden" name="invDate" th:value="${invoiceData.invDate}" />
+                                <input type="hidden" name="paymentForMonth" th:value="${invoiceData.paymentForMonth}" />
+                                <input type="hidden" name="totalEmp" th:value="${invoiceData.totalEmp}" />
+                                <input type="hidden" name="totalAmount" th:value="${invoiceData.totalAmount}" />
+                                <input type="hidden" name="companyTitle" th:value="${invoiceData.companyTitle}" />
+                                <input type="hidden" name="contactPerson" th:value="${invoiceData.contactPerson}" />
+                                <input type="hidden" name="contactMobile" th:value="${invoiceData.contactMobile}" />
+                                <input type="hidden" name="companyAddress" th:value="${invoiceData.companyAddress}" />
+                                <input type="hidden" name="economicCode" th:value="${invoiceData.economicCode}" />
+                                <input type="hidden" name="Currency" th:value="${invoiceData.currency}" />
+                                <input type="hidden" name="Scheme_name" th:value="${invoiceData.schemeName}" />
+                                <input type="hidden" name="AccNo" th:value="${invoiceData.creditAccDetails.accNo}" />
+
+
+
+                                <div class="mt-3">
+                                    <button type="button" class="btn btn-success w-100 fw-bold" onclick="submitCompanyPayment()">Confirm Payment</button>
+                                </div>
 
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -207,104 +255,27 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-// DOM Elements
-        const nidInput = document.getElementById('nid');
-        const payablePerInstallment = parseFloat(document.getElementById('payable_per_installment').value) || 0;
-        const grandTotalDueAmountInput = document.getElementById('grand_total_due_amount');
-        const advanceInstallmentsInput = document.getElementById('advance_installments');
-        const advancePaymentTotalInput = document.getElementById('advance_payment_total');
-        const calculateButton = document.getElementById('calculate_advance_payment');
-        const decreaseButton = document.getElementById('decrease_advance_payment');
-        const submitButton = document.getElementById('submit');
+    function submitCompanyPayment() {
+        const totalEmp = document.querySelector("input[name='totalEmp']").value;
+        const totalAmount = document.querySelector("input[name='totalAmount']").value;
 
-// Store original Grand Total Due Amount
-        const originalGrandTotalDue = parseFloat(grandTotalDueAmountInput.value) || 0;
-
-// Function to calculate and update advance payment
-        function updateAdvancePayment() {
-            const numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
-
-            if (!isValidInstallments(numInstallments)) {
-                alert('Please enter a valid number of installments between 1 and 12.');
-                resetAdvanceFields();
-                return;
-            }
-
-            const totalAdvancePayment = calculateTotalAdvance(numInstallments, payablePerInstallment);
-            advancePaymentTotalInput.value = totalAdvancePayment;
-            grandTotalDueAmountInput.value = originalGrandTotalDue + totalAdvancePayment;
-        }
-
-// Calculate advance payment and update Grand Total (Plus button)
-        calculateButton.addEventListener('click', function () {
-            let numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
-            if (numInstallments < 12) {
-                advanceInstallmentsInput.value = numInstallments + 1;
-                updateAdvancePayment();
-            } else {
-                alert('Maximum limit of 12 installments reached.');
+        Swal.fire({
+            title: 'Confirm Company Payment',
+            html: `
+                <p><strong>Employees:</strong> ${totalEmp}</p>
+                <p><strong>Amount:</strong> ৳${totalAmount}</p>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Proceed',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#198754'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('companyPaymentForm').submit();
             }
         });
-
-// Decrease advance payment (Minus button)
-        decreaseButton.addEventListener('click', function () {
-            let numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
-            if (numInstallments > 0) {
-                advanceInstallmentsInput.value = numInstallments - 1;
-                updateAdvancePayment();
-            }
-        });
-
-// Handle form submission with NID verification
-        submitButton.addEventListener('click', function (event) {
-            event.preventDefault();
-
-            const formNID = nidInput.value.trim();
-            const userNID = prompt("Please enter your NID for verification:");
-
-            if (!isValidNID(userNID, formNID)) {
-                alert("NID does not match or is invalid. Submission canceled.");
-                return;
-            }
-
-// If NID matches, proceed with submission
-            submitPayment();
-        });
-
-// Helper Functions
-        function isValidInstallments(num) {
-            return !isNaN(num) && num >= 0 && num <= 12;
-        }
-
-        function calculateTotalAdvance(installments, perInstallment) {
-            return installments * perInstallment;
-        }
-
-        function resetAdvanceFields() {
-            advanceInstallmentsInput.value = '';
-            advancePaymentTotalInput.value = 0;
-            grandTotalDueAmountInput.value = originalGrandTotalDue;
-        }
-
-        function isValidNID(userNID, formNID) {
-            return userNID !== null && userNID.trim() === formNID;
-        }
-
-        function submitPayment() {
-            const numInstallments = parseInt(advanceInstallmentsInput.value) || 0;
-            const totalAdvancePayment = parseFloat(advancePaymentTotalInput.value) || 0;
-            const currentGrandTotalDue = parseFloat(grandTotalDueAmountInput.value);
-
-            const message = numInstallments > 0
-                ? `Payment submitted successfully!\nAdvance Installments: ${numInstallments}\nAdvance Amount: ${totalAdvancePayment} BDT\nGrand Total Due Amount: ${currentGrandTotalDue} BDT`
-                : `Payment submitted successfully!\nGrand Total Due Amount: ${currentGrandTotalDue} BDT`;
-
-            alert(message);
-
-// Reset fields after submission
-            resetAdvanceFields();
-        }
-    });
+    }
 </script>
+
 </html>
