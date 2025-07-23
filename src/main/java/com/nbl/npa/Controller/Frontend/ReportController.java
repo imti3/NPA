@@ -75,12 +75,12 @@ public class ReportController {
         model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(), Cipher.DECRYPT_MODE));
         model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(),Cipher.DECRYPT_MODE));
         try {
-//            String userType = AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE);
+            String userType = AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE);
             model.addAttribute("reportList", reportService.getAll());
-//            if(Objects.equals(userType, "Admin")){
-//                model.addAttribute("branchList", service.getAllBranch());
-//
-//            }
+            if(Objects.equals(userType, "Admin")){
+                model.addAttribute("branchList", reportService.getAllBranch());
+
+            }
             return "pension_report";
         }
         catch (Exception e){
@@ -95,14 +95,14 @@ public class ReportController {
                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date fromDate,
                                               @RequestParam(value = "toDate", required = false)
                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date toDate,
-//                                              @RequestParam(value = "branchInfo", required = false, defaultValue = "") String branchInfo,
+                                              @RequestParam(value = "branchInfo", required = false, defaultValue = "") String branchInfo,
                                               @RequestParam(value = "reportId", required = false) Integer reportId,
                                               HttpSession session, HttpServletResponse response) throws IOException, JRException, SQLException, ParseException {
-//        String branch = (branchInfo == null || branchInfo.isEmpty()) ? null : branchInfo;
-//        String userType = AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE);
-//        if(Objects.equals(userType, "User")){
-            String branch = AES256.processCrypto(session.getAttribute("brCode").toString(), Cipher.DECRYPT_MODE);
-//        }
+        String branch = (branchInfo == null || branchInfo.isEmpty()) ? null : branchInfo;
+        String userType = AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE);
+        if(Objects.equals(userType, "User")){
+            branch = AES256.processCrypto(session.getAttribute("brCode").toString(), Cipher.DECRYPT_MODE);
+        }
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("p_from_date", fromDate);
         parameters.put("p_to_date", toDate);

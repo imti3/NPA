@@ -21,13 +21,11 @@ public class ReportSources {
 	@Value("${npa.report}")
 	public String REPORT_COMPILE_DIR;
 
-
-    /*
-	@Value("${report.image.dir}")
-	public String REPORT_IMAGE_DIR;*/
-
 	@Value("${npa.report.output}")
 	public String REPORT_OUTPUT_DIR;
+
+	@Value("${npa.image}")
+	public String REPORT_IMAGE_DIR;
 
 	//............
 	//Image classpath file name
@@ -43,9 +41,9 @@ public class ReportSources {
 		return String.format("%s%s", REPORT_COMPILE_DIR, filename);
 	}
 	
-	/*public String getImage(String image) {
+	public String getImage(String image) {
 		return String.format("%s%s", REPORT_IMAGE_DIR, image);
-	}*/
+	}
 	
 	public String getOutputReport(String filename) {
 		return String.format("%s%s", REPORT_OUTPUT_DIR, filename);

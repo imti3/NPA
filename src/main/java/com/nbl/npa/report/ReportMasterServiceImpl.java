@@ -2,6 +2,7 @@ package com.nbl.npa.report;
 
 
 
+import com.nbl.npa.Model.DTO.BranchInfo;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import org.springframework.util.ObjectUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 
 @Service
@@ -25,6 +26,7 @@ public class ReportMasterServiceImpl implements ReportMasterService {
     private static final Logger LOG = LoggerFactory.getLogger(ReportMasterServiceImpl.class);
 
     private final ReportMasterRepository repo;
+    private final ReportMasterRepository reportMasterRepository;
 
     @PostConstruct
     public void init() {
@@ -75,6 +77,16 @@ public class ReportMasterServiceImpl implements ReportMasterService {
     @Override
     public ReportMaster getById(Integer id) {
         return repo.findById(id).get();
+    }
+
+    @Override
+    public List<BranchInfo> getAllBranch() {
+        return reportMasterRepository.findRawBranchInfo().stream()
+                .map(row -> new BranchInfo(
+                        (String) row.get("BranchCode"),
+                        (String) row.get("Br_Name")
+                ))
+                .collect(Collectors.toList());
     }
 
 

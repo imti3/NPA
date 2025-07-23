@@ -1,6 +1,7 @@
 package com.nbl.npa.report;
 
 
+import com.nbl.npa.Model.DTO.BranchInfo;
 import org.springframework.data.domain.Page;
 
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.util.List;
 
 
 public interface ReportMasterService {
+
     ReportMaster save(ReportMaster obj) throws IOException;
 
     ReportMaster update(ReportMaster obj) throws IOException;
@@ -21,4 +23,6 @@ public interface ReportMasterService {
     List<ReportMaster> getAllActive();
 
     Page<ReportMaster> getPageableList(int page, int size);
+
+    List<BranchInfo> getAllBranch();
 }

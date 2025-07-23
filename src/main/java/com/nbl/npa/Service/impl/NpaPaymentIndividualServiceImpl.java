@@ -46,6 +46,10 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
     @Value("${api.base-url}")
     private String baseUrl;
 
+    @Value("${APIUSR}")
+
+    private String username;
+
     @Value("${api.getpaymentindividual}")
     private String PaymentUrl;
 
@@ -131,11 +135,11 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
         payment.setCustTblId(customer.getId());
 
         // Save the payment initially
-        return initiateAndSave(payment, "NPA@056Tst%");
+        return initiateAndSave(payment);
     }
 
 
-    public Optional<Map<String, Object>> verifyPaymentStatus(String paymentRefNo, String userId) {
+    public Optional<Map<String, Object>> verifyPaymentStatus(String paymentRefNo) {
         String apiUrl = baseUrl + paymentStatusUrl;
         String apiToken = tokenService.getToken();
 
@@ -153,12 +157,12 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
         headers.setBearerAuth(apiToken);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("UserId", userId);
+        formData.add("UserId", username);
         formData.add("Payment_Ref_No", paymentRefNo);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
 
-        log.info("Calling /paymentstatus for RefNo: {}, UserId: {}", paymentRefNo, userId);
+        log.info("Calling /paymentstatus for RefNo: {}, UserId: {}", paymentRefNo, username);
 
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, request, String.class);
@@ -229,7 +233,7 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
 
 
     @Override
-    public TblNpaPaymentIndividualEntity initiateAndSave(TblNpaPaymentIndividualEntity newPayment, String username) {
+    public TblNpaPaymentIndividualEntity initiateAndSave(TblNpaPaymentIndividualEntity newPayment) {
         log.info("Starting payment initiation for PID: {}", newPayment.getPid());
 
         try {
@@ -239,7 +243,7 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
                 log.info("Found pending payment for PID {}: RefNo={}", existingPending.getPid(), existingPending.getPaymentRefNo());
 
                 // STEP 2: Verify vendor status for the existing pending payment
-                Optional<Map<String, Object>> preStatus = verifyPaymentStatus(existingPending.getPaymentRefNo(), "nBl@Np@Tst");
+                Optional<Map<String, Object>> preStatus = verifyPaymentStatus(existingPending.getPaymentRefNo());
                 if (preStatus.isPresent()) {
                     log.info("Vendor confirms previous payment is successful for RefNo={}", existingPending.getPaymentRefNo());
                     return confirmAndSaveFromStatus(existingPending, preStatus.get());
@@ -260,10 +264,10 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
             paymentRepo.save(newPayment);
 
             // STEP 5: Call vendor API to make payment
-            makePaymentToVendor(newPayment, txnId, username);
+            makePaymentToVendor(newPayment, txnId);
 
             // STEP 6: Post-check vendor status after attempting payment
-            Optional<Map<String, Object>> postStatus = verifyPaymentStatus(newPayment.getPaymentRefNo(), "nBl@Np@Tst");
+            Optional<Map<String, Object>> postStatus = verifyPaymentStatus(newPayment.getPaymentRefNo());
             if (postStatus.isPresent()) {
                 log.info("Vendor confirms payment after execution for RefNo={}", newPayment.getPaymentRefNo());
                 return confirmAndSaveFromStatus(newPayment, postStatus.get());
@@ -290,7 +294,7 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
         return paymentRepo.save(payment);
     }
 
-    private void makePaymentToVendor(TblNpaPaymentIndividualEntity payment, String txnId, String username) {
+    private void makePaymentToVendor(TblNpaPaymentIndividualEntity payment, String txnId) {
         String apiUrl = baseUrl + PaymentUrl;
         String apiToken = tokenService.getToken();
 
@@ -354,7 +358,7 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("Payment_Ref_No", payment.getPaymentRefNo());
         formData.add("PID", payment.getPid());
-        formData.add("UserId", "nBl@Np@Tst");
+        formData.add("UserId", username);
         formData.add("TransactionId", transactionId);
         formData.add("Paying_Install_Count", payment.getPaidCount().toPlainString());
         formData.add("Paying_Amount", payment.getPaidAmount().toPlainString());

@@ -33,7 +33,9 @@ public interface NpaIndividualRepository extends JpaRepository<TblNpaPaymentIndi
             "WHERE p.paymentRefNo = :paymentRefNo AND p.expired = 0")
     int markExistingPaymentsExpired(@Param("paymentRefNo") String paymentRefNo);
 
+
     TblNpaPaymentIndividualEntity findByPaymentRefNo(String paymentRefNo);
+    Optional<TblNpaPaymentIndividualEntity> findTopByBankTxnIdOrderByEntryDateDesc(String bankTxnId);
 
     TblNpaPaymentIndividualEntity findTopByPidAndTransactionStatusOrderByEntryDateDesc(String pid, int transactionStatus);
 
@@ -52,5 +54,18 @@ public interface NpaIndividualRepository extends JpaRepository<TblNpaPaymentIndi
     Page<TblNpaPaymentIndividualEntity> findByBranchCodeAndPidAndBankTxnId(Integer branchCode, String pid, String bankTxnId, Pageable pageable);
 
     Page<TblNpaPaymentIndividualEntity> findByBranchCodeAndNidAndPidAndBankTxnId(Integer branchCode, String nid, String pid, String bankTxnId, Pageable pageable);
+
+    // In NpaIndividualRepository.java
+
+    @Query("SELECT t FROM TblNpaPaymentIndividualEntity t " +
+            "WHERE (:nid IS NULL OR t.nid = :nid) " +
+            "AND (:pid IS NULL OR t.pid = :pid) " +
+            "AND (:bankTxnId IS NULL OR t.bankTxnId = :bankTxnId)")
+    Page<TblNpaPaymentIndividualEntity> findByFiltersAllBranches(
+            @Param("nid") String nid,
+            @Param("pid") String pid,
+            @Param("bankTxnId") String bankTxnId,
+            Pageable pageable
+    );
 
 }

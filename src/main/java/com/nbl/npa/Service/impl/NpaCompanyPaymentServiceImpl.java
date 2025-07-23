@@ -43,6 +43,10 @@ public class NpaCompanyPaymentServiceImpl implements NpaCompanyPaymentService {
     @Value("${api.base-url}")
     private String baseUrl;
 
+    @Value("${APIUSR}")
+
+    private String APIUSR;
+
     @Value("${api.companypayment}")
     private String paymentUrl;
 
@@ -160,7 +164,7 @@ public class NpaCompanyPaymentServiceImpl implements NpaCompanyPaymentService {
         headers.setBearerAuth(apiToken);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("UserId", "nBl@Np@Tst");
+        formData.add("UserId", APIUSR);
         formData.add("Payment_Ref_No", paymentRefNo);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
@@ -223,7 +227,7 @@ public class NpaCompanyPaymentServiceImpl implements NpaCompanyPaymentService {
         formData.add("VAT_Amount", payment.getVatAmount() != null ? payment.getVatAmount().toPlainString() : "0.00");
         formData.add("PayMode", payment.getPayMode());
         formData.add("TransactionId", txnId);
-        formData.add("UserId", "nBl@Np@Tst");
+        formData.add("UserId", APIUSR);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
 

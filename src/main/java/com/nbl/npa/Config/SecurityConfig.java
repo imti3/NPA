@@ -108,6 +108,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/pension_report/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/pension_verify/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/payment_history/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/verify/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/verify_payment/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/initial/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/initial_company/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/make_company_payment/**").permitAll()

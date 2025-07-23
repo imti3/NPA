@@ -29,6 +29,12 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
         pid = (pid != null && !pid.trim().isEmpty()) ? pid.trim() : null;
         bankTxnId = (bankTxnId != null && !bankTxnId.trim().isEmpty()) ? bankTxnId.trim() : null;
 
+
+        if (branchCode == null) {
+
+            return individualRepo.findByFiltersAllBranches(nid, pid, bankTxnId, pageable);
+        }
+
         if (nid != null && pid != null && bankTxnId != null) {
             return individualRepo.findByBranchCodeAndNidAndPidAndBankTxnId(branchCode, nid, pid, bankTxnId, pageable);
         }
@@ -61,6 +67,11 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 
         companyPID = (companyPID != null && !companyPID.trim().isEmpty()) ? companyPID.trim() : null;
         bankTxnId = (bankTxnId != null && !bankTxnId.trim().isEmpty()) ? bankTxnId.trim() : null;
+
+
+        if (branchCode == null) {
+            return companyRepo.findByFiltersAllBranches(companyPID, bankTxnId, pageable);
+        }
 
         if (companyPID != null && bankTxnId != null) {
             return companyRepo.findByBranchCodeAndCompanyPIDAndBankTxnId(branchCode, companyPID, bankTxnId, pageable);

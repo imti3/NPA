@@ -6,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pension Report</title>
     <link href="/css/styles.css" rel="stylesheet"/>
-<!--    <link rel="icon" type="image/x-icon" href="/assets/favicon.png"/>-->
+    <link href="/css/select2.min.css" rel="stylesheet" />
     <script src="/js/jquery-3.6.0.min.js"></script>
     <script src="/js/select2.min.js"></script>
-
     <style>
         .header-container {
             text-align: center;
@@ -17,11 +16,9 @@
             justify-content: center;
             align-items: center;
         }
-
         .card-container {
             margin-top: 20px;
         }
-
         .table td, .table th {
             padding: 4px 8px;
             line-height: 1;
@@ -29,23 +26,30 @@
             vertical-align: middle;
             font-size: 14px;
         }
-
-
-
-
+        .select2-container--default .select2-selection--single {
+            height: 46px !important;
+            padding: 6px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .select2-selection__rendered {
+            line-height: 24px !important;
+        }
+        .select2-selection__arrow {
+            height: 36px !important;
+        }
         @media print {
             body * {
                 visibility: hidden !important;
             }
-
             .modal-footer {
                 display: none !important;
             }
-
             #printPopupModal, #printPopupModal * {
                 visibility: visible !important;
             }
-
             #printPopupModal {
                 position: static !important;
                 width: 100% !important;
@@ -59,16 +63,13 @@
                 transform: scale(0.75);
                 transform-origin: 0 0;
             }
-
             #printPopupModal * {
                 font-size: 12px !important;
                 line-height: 1.2 !important;
             }
-
             .modal-backdrop {
                 display: none !important;
             }
-
             @page {
                 size: auto;
                 margin: 0 !important;
@@ -76,7 +77,6 @@
         }
     </style>
 </head>
-
 <body class="min-vh-100 d-flex flex-column">
 
 <!-- Header -->
@@ -103,7 +103,6 @@
             </div>
         </div>
     </header>
-
     <div class="container-xl card-container mt-0 pt-2">
         <div class="card">
             <div class="card-body p-4 header-container">
@@ -115,22 +114,28 @@
                             <option value="">Select Report</option>
                             <option th:each="report : ${reportList}"
                                     th:value="${report.id}"
-                                    th:text="${report.reprotTitle}"></option>
+                                    th:text="${report.reprotTitle}">
+                            </option>
                         </select>
                     </div>
-
                     <div class="col-md-4">
                         <label for="fromDate" class="form-label">From Date</label>
-                        <input type="date" id="fromDate" name="fromDate" class="form-control"
-                               th:value="${{fromDate}}" required>
+                        <input type="date" id="fromDate" name="fromDate" class="form-control" th:value="${{fromDate}}" required>
                     </div>
-
                     <div class="col-md-4">
                         <label for="toDate" class="form-label">To Date</label>
-                        <input type="date" id="toDate" name="toDate" class="form-control"
-                               th:value="${{toDate}}" required>
+                        <input type="date" id="toDate" name="toDate" class="form-control" th:value="${{toDate}}" required>
                     </div>
-
+                    <div class="col-md-4" th:if="${!#lists.isEmpty(branchList)}">
+                        <label for="branchInfo" class="form-label">Branch</label>
+                        <select id="branchInfo" name="branchInfo" class="form-select select2 form-control">
+                            <option value="">All Branch</option>
+                            <option th:each="branch : ${branchList}"
+                                    th:value="${branch.branchCode}"
+                                    th:text="${branch.branchName}">
+                            </option>
+                        </select>
+                    </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="submit" class="btn btn-success px-4">Generate Report</button>
                     </div>
@@ -140,12 +145,20 @@
     </div>
 </main>
 
-<!-- Footer -->
 <div th:insert="~{fragments/footer :: footer}"></div>
 
-
-
-<!-- Scripts -->
+<script>
+    $(document).ready(function () {
+        $('#branchInfo').select2({
+            placeholder: "-- All Branch--",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+</script>
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/fontawesome_all.min.js"></script>
 <script src="/js/feather.min.js"></script>

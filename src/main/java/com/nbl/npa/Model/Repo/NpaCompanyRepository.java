@@ -34,6 +34,8 @@ public interface NpaCompanyRepository  extends JpaRepository<TblNpaCompanyPaymen
 
         // Find payment by paymentRefNo
         TblNpaCompanyPaymentEntity findByPaymentRefNo(String paymentRefNo);
+        Optional<TblNpaCompanyPaymentEntity> findTopByBankTxnIdOrderByEntryDateDesc(String bankTxnId);
+
 
         // Find latest pending payment for this company PID
         TblNpaCompanyPaymentEntity findTopByCompanyPIDAndTransactionStatusOrderByEntryDateDesc(String companyPID, int transactionStatus);
@@ -43,6 +45,17 @@ public interface NpaCompanyRepository  extends JpaRepository<TblNpaCompanyPaymen
         Page<TblNpaCompanyPaymentEntity> findByBranchCodeAndCompanyPID(Integer branchCode, String companyPID, Pageable pageable);
         Page<TblNpaCompanyPaymentEntity> findByBranchCodeAndBankTxnId(Integer branchCode, String bankTxnId, Pageable pageable);
         Page<TblNpaCompanyPaymentEntity> findByBranchCode(Integer branchCode, Pageable pageable);
+
+        // In NpaIndividualRepository.java
+
+        @Query("SELECT t FROM TblNpaCompanyPaymentEntity t " +
+                "WHERE (:pid IS NULL OR t.companyPID = :pid) " +
+                "AND (:bankTxnId IS NULL OR t.bankTxnId = :bankTxnId)")
+        Page<TblNpaCompanyPaymentEntity> findByFiltersAllBranches(
+                @Param("pid") String pid,
+                @Param("bankTxnId") String bankTxnId,
+                Pageable pageable
+        );
 
 
         // Add more query methods as needed

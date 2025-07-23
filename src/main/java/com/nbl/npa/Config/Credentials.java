@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Component
 public class Credentials {
-	private final String redirectURL = "https://sso.nblbd.com/sso/";
+//	private final String redirectURL = "https://sso.nblbd.com/sso/";
 	  
 //	  TEST SSO
-//	  private String redirectURL ="http://192.168.0.127/sso/";
+	  private final String redirectURL ="http://192.168.0.127/sso/";
 
 
 }

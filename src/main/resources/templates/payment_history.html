@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,9 @@
 
     <link rel="icon" type="image/x-icon" href="/assets/img/favicon.png"/>
     <link href="/css/styles.css" rel="stylesheet"/>
+    <link href="/css/select2.min.css" rel="stylesheet" />
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/select2.min.js"></script>
 
     <style>
         .card-container {
@@ -16,6 +19,16 @@
             padding: 4px 8px;
             font-size: 13px;
             vertical-align: middle;
+        }
+        .form-control, .select2-container .select2-selection--single {
+            height: 38px !important;
+            min-height: 38px !important;
+            font-size: 13px;
+        }
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 6px 12px;
         }
     </style>
 </head>
@@ -53,7 +66,7 @@
                             </select>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-2" id="nidField" style="display: none;">
                             <label for="nid" class="form-label">NID</label>
                             <input id="nid" name="nid" class="form-control" th:value="${nid}" />
                         </div>
@@ -65,6 +78,18 @@
                         <div class="col-md-2">
                             <label for="BankTxnId" class="form-label">Bank Txn ID</label>
                             <input id="BankTxnId" name="bankTxnId" class="form-control" th:value="${bankTxnId}" />
+                        </div>
+
+                        <div class="col-md-2" th:if="${!#lists.isEmpty(branchList)}">
+                            <label for="branchInfo" class="form-label">Branch</label>
+                            <select id="branchInfo" name="branchInfo" class="form-select select2 form-control">
+                                <option value="">All Branch</option>
+                                <option th:each="branch : ${branchList}"
+                                        th:value="${branch.branchCode}"
+                                        th:text="${branch.branchName}"
+                                        th:selected="${branch.branchCode == branchInfo}">
+                                </option>
+                            </select>
                         </div>
 
                         <div class="col-md-2 d-flex align-items-end">
@@ -81,6 +106,7 @@
                         <tr>
                             <th>#</th>
                             <th>Bank Trx ID</th>
+                            <th>NPA Trx ID</th>
                             <th>PID</th>
                             <th>NID</th>
                             <th>Payable Per Installment</th>
@@ -97,6 +123,7 @@
                         <tr th:each="payment, stat : ${individualPaymentPage.content}">
                             <td th:text="${stat.index + 1 + (individualPaymentPage.number * individualPaymentPage.size)}"></td>
                             <td th:text="${payment.bankTxnId} ?: 'N/A'"></td>
+                            <td th:text="${payment.paymentRefNo} ?: 'N/A'"></td>
                             <td th:text="${payment.pid}"></td>
                             <td th:text="${payment.nid}"></td>
                             <td th:text="${payment.payablePerInstallment}"></td>
@@ -143,6 +170,7 @@
                         <tr>
                             <th>#</th>
                             <th>Bank Trx ID</th>
+                            <th>NPA Trx ID</th>
                             <th>Company PID</th>
                             <th>Company Title</th>
                             <th>Contact Person</th>
@@ -157,6 +185,7 @@
                         <tr th:each="payment, stat : ${companyPaymentPage.content}">
                             <td th:text="${stat.index + 1 + (companyPaymentPage.number * companyPaymentPage.size)}"></td>
                             <td th:text="${payment.bankTxnId} ?: 'N/A'"></td>
+                            <td th:text="${payment.paymentRefNo} ?: 'N/A'"></td>
                             <td th:text="${payment.companyPID}"></td>
                             <td th:text="${payment.companyTitle}"></td>
                             <td th:text="${payment.contactPerson}"></td>
@@ -200,6 +229,27 @@
 </main>
 
 <div th:insert="~{fragments/footer :: footer}"></div>
+<script>
+    $(document).ready(function () {
+        $('#branchInfo').select2({
+            placeholder: "-- All Branch--",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Toggle NID field on paymentType change
+        function toggleNidField() {
+            if ($('#paymentType').val() === 'individual') {
+                $('#nidField').show();
+            } else {
+                $('#nidField').hide();
+            }
+        }
+        toggleNidField();
+        $('#paymentType').on('change', toggleNidField);
+    });
+</script>
+
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script src="/js/fontawesome_all.min.js"></script>
 </body>

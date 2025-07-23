@@ -34,6 +34,6 @@ public interface NpaPaymentIndividualService {
     );
 
 
-    TblNpaPaymentIndividualEntity initiateAndSave(TblNpaPaymentIndividualEntity payment, String username);
+    TblNpaPaymentIndividualEntity initiateAndSave(TblNpaPaymentIndividualEntity payment);
 }
 
