@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,24 +72,39 @@ public class ReportController {
 
 
     @GetMapping(value = "/pension_report")
-    public String report(Model model, HttpSession session) {
+    public String report(@RequestParam(required = false) String fromDate,
+                         @RequestParam(required = false) String toDate,
+                         Model model, HttpSession session) {
         model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(), Cipher.DECRYPT_MODE));
-        model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(),Cipher.DECRYPT_MODE));
+        model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(), Cipher.DECRYPT_MODE));
+
         try {
             String userType = AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE);
-            model.addAttribute("reportList", reportService.getAll());
-            if(Objects.equals(userType, "Admin")){
-                model.addAttribute("branchList", reportService.getAllBranch());
 
+            // Default to current date if not provided
+            LocalDate today = LocalDate.now();
+            if (fromDate == null) {
+                fromDate = today.toString(); // format yyyy-MM-dd
             }
+            if (toDate == null) {
+                toDate = today.toString();
+            }
+
+            model.addAttribute("fromDate", fromDate);
+            model.addAttribute("toDate", toDate);
+            model.addAttribute("reportList", reportService.getAll());
+
+            if (Objects.equals(userType, "Admin")) {
+                model.addAttribute("branchList", reportService.getAllBranch());
+            }
+
             return "pension_report";
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             session.invalidate();
             return creds.getRedirectURL();
         }
-
     }
+
 
     @PostMapping("/report-print")
     public ResponseEntity<byte[]> printReport(@RequestParam(value = "fromDate", required = false)

@@ -3,6 +3,7 @@ package com.nbl.npa.Controller.Api;
 import com.google.gson.Gson;
 import com.nbl.npa.Model.Entities.TblNpaCompanyPaymentEntity;
 import com.nbl.npa.Model.Entities.TblNpaPaymentIndividualEntity;
+import com.nbl.npa.Model.Repo.ConfigurationRepository;
 import com.nbl.npa.Model.Repo.NpaCompanyRepository;
 import com.nbl.npa.Model.Repo.NpaIndividualRepository;
 import com.nbl.npa.Service.NpaLogService;
@@ -24,18 +25,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PaymentStatusController {
 
-    @Value("${NPA.USERNAME}")
-    private String username;
-
+    private final ConfigurationRepository configurationRepository;
     private final NpaIndividualRepository individualPaymentRepo;
     private final NpaCompanyRepository companyPaymentRepo;  // New repo for company payments
     private final NpaLogService npaLogService;
+    String username;
 
     @PostMapping
     public ResponseEntity<?> getStatus(@RequestBody Map<String, String> request) {
 
+        // Fetch username from configuration repository
+      username = configurationRepository.findFirstByOrderByIdAsc().getUserId();
+
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         request.forEach(formData::add);
+
 
         Map<String, Object> response = new LinkedHashMap<>();
         String paymentRefNo = request.get("Payment_Ref_No");

@@ -110,13 +110,14 @@
                             <th>PID</th>
                             <th>NID</th>
                             <th>Payable Per Installment</th>
-                            <th>Advance Count</th>
-                            <th>Advance Amount</th>
-                            <th>Paid Amount</th>
-                            <th>Paid Count</th>
-                            <th>Entry By</th>
+                            <th>Total Advance Installment Paid</th>
+                            <th>Total Advance Amount Paid</th>
+                            <th>Total Paid Amount</th>
+                            <th>Total Paid Installment</th>
+                            <th>Inputted By</th>
                             <th>Entry Date</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -137,6 +138,18 @@
                                 <span th:if="${payment.transactionStatus == 1}" class="text-success">Success</span>
                                 <span th:unless="${payment.transactionStatus == 1}" class="text-danger">Failed</span>
                             </td>
+                            <td>
+                                <a th:if="${payment.transactionStatus == 1}"
+                                   th:href="@{/pension/slip(id=${payment.id})}"
+                                   class="btn btn-sm btn-primary"
+                                   target="_blank" rel="noopener">
+                                    <i class="fa fa-print"></i> Print Slip
+                                </a>
+                                <span th:unless="${payment.transactionStatus == 1}" class="text-muted">—</span>
+                            </td>
+
+
+
                         </tr>
                         <tr th:if="${individualPaymentPage.totalElements == 0}">
                             <td colspan="12" class="text-center text-muted">No records found.</td>
@@ -179,6 +192,7 @@
                             <th>Entry By</th>
                             <th>Entry Date</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -196,6 +210,16 @@
                             <td>
                                 <span th:if="${payment.transactionStatus == 1}" class="text-success">Success</span>
                                 <span th:unless="${payment.transactionStatus == 1}" class="text-danger">Failed</span>
+                            </td>
+
+                            <td>
+                                <a th:if="${payment.transactionStatus == 1}"
+                                   th:href="@{/company/slip(id=${payment.id})}"
+                                   class="btn btn-sm btn-primary"
+                                   target="_blank" rel="noopener">
+                                    <i class="fa fa-print"></i> Print Slip
+                                </a>
+                                <span th:unless="${payment.transactionStatus == 1}" class="text-muted">—</span>
                             </td>
                         </tr>
                         <tr th:if="${companyPaymentPage.totalElements == 0}">

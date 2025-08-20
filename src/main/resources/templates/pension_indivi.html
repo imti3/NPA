@@ -349,10 +349,14 @@
 
                 </div>
                 <!-- Buttons -->
-                <div class="d-flex justify-content-center">
-                    <!--                        <button type="button" class="btn btn-outline-danger" onclick="prevStep()">Back</button>-->
+                <div class="d-flex justify-content-center gap-3">
+                    <!-- <button type="button" class="btn btn-outline-danger" onclick="prevStep()">Back</button> -->
                     <button type="button" id="submitBtn" class="btn btn-lg btn-green"><b>Pay Now</b></button>
+                    <button type="button" class="btn btn-primary" onclick="openSlip()">
+                        Print Acknowledgement Slip
+                    </button>
                 </div>
+
             </div>
                                 <input type="hidden" name="Payment_Ref_No" id="payment_ref_no"
                                        th:value="${pensionData != null && pensionData.creditAccDetails != null ? pensionData.creditAccDetails.paymentRefNo : ''}">
@@ -430,7 +434,15 @@
 
 
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
 // DOM Elements
 const nidInput = document.getElementById('nid');
 const payablePerInstallment = parseFloat(document.getElementById('payable_per_installment').value) || 0;
@@ -445,6 +457,9 @@ const submitButton = document.getElementById('submitBtn');
             const grandTotalDueAmountInput = document.getElementById('grand_total_due_amount');
             const rawGrandTotal = grandTotalDueAmountInput.textContent.replace(/[^\d.]/g, ''); // removes non-numeric
             const currentGrandTotalDue = parseFloat(rawGrandTotal) || 0;
+
+
+
 
 // Function to calculate and update advance payment
 function updateAdvancePayment() {
@@ -494,59 +509,25 @@ updateAdvancePayment();
 });
 
 // Handle form submission with NID verification
-            submitButton.addEventListener('click', function (event) {
-                event.preventDefault();
+    submitButton.addEventListener('click', function (event) {
+        event.preventDefault();
 
-                const formName = document.getElementById('name').value.trim().toLowerCase(); // get expected name
-                const rawGrandTotal = grandTotalDueAmountInput.textContent.replace(/[^\d.]/g, '');
-                const currentGrandTotalDue = parseFloat(rawGrandTotal) || 0;
+        const rawGrandTotal = grandTotalDueAmountInput.textContent.replace(/[^\d.]/g, '');
+        const currentGrandTotalDue = parseFloat(rawGrandTotal) || 0;
 
-                if (currentGrandTotalDue === 0) {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'No Payment Due',
-                        text: 'You have no outstanding payments at this time.',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#198754'
-                    });
-                    return;
-                }
-
-                Swal.fire({
-                    title: 'Verify Your Name',
-                    input: 'text',
-                    inputLabel: 'Please enter your full name to continue',
-                    inputPlaceholder: 'Enter your full name',
-                    inputAttributes: {
-                        autocapitalize: 'off'
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: 'Verify',
-                    confirmButtonColor: '#198754',
-                    cancelButtonText: 'Cancel',
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'Name cannot be empty!';
-                        } else if (!isValidName(value, formName)) {
-                            return 'Name does not match!';
-                        }
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Verified!',
-                            text: 'Name matched. Proceeding with submission...',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-
-                        setTimeout(() => {
-                            submitPayment(); // your submission logic
-                        }, 1600);
-                    }
-                });
+        if (currentGrandTotalDue === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Payment Due',
+                text: 'You have no outstanding payments at this time.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#198754'
             });
+            return;
+        }
+        submitPayment();
+    });
+
 
 
 
@@ -645,5 +626,28 @@ grandTotalDueAmountInput.value = currentGrandTotalDue;
 
 
         });
+function openSlip() {
+    const idNumber = document.getElementById('NID_hidden').value;
+    if (!idNumber) { alert('Missing ID number'); return; }
+
+    // read the visible "123.45 BDT"
+    const amtEl = document.getElementById('grand_total_due_amount');
+    const finalAmount = parseFloat((amtEl.textContent || '').replace(/[^\d.-]/g, '')) || 0;
+
+    // compute final count = base due count + advance installments
+    const baseCount = parseInt(document.getElementById('grand_total_due_count')?.value)
+        || parseInt(document.getElementById('GrandTotalDueCount')?.value) // hidden fallback
+        || 0;
+    const advCount  = parseInt(document.getElementById('advance_installments')?.value) || 0;
+    const finalCount = baseCount + advCount;
+
+    const url = '/pension/slip'
+        + '?idNumber=' + encodeURIComponent(idNumber)
+        + '&finalPaidAmount=' + encodeURIComponent(finalAmount)
+        + '&finalPaidCount='  + encodeURIComponent(finalCount);
+
+    window.open(url, '_blank');
+}
+
 </script>
 </html>

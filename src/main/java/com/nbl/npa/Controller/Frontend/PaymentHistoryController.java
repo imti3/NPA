@@ -77,10 +77,5 @@ public class PaymentHistoryController {
 
         return "payment_history";
     }
-
-
-
-
-
 }
 

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pension Report</title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.png"/>
     <link href="/css/styles.css" rel="stylesheet"/>
     <link href="/css/select2.min.css" rel="stylesheet" />
     <script src="/js/jquery-3.6.0.min.js"></script>
@@ -111,12 +112,13 @@
                     <div class="col-md-4">
                         <label for="reportId" class="form-label">Report</label>
                         <select id="reportId" name="reportId" class="form-select select2 form-control" required>
-                            <option value="">Select Report</option>
-                            <option th:each="report : ${reportList}"
+                            <option th:each="report, stat : ${reportList}"
                                     th:value="${report.id}"
-                                    th:text="${report.reprotTitle}">
+                                    th:text="${report.reprotTitle}"
+                                    th:selected="${stat.index == 0}">
                             </option>
                         </select>
+
                     </div>
                     <div class="col-md-4">
                         <label for="fromDate" class="form-label">From Date</label>

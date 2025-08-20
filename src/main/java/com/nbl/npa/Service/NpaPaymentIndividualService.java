@@ -3,8 +3,11 @@ package com.nbl.npa.Service;
 import com.nbl.npa.Model.Entities.TblNpaPaymentIndividualEntity;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface NpaPaymentIndividualService {
+    Optional<TblNpaPaymentIndividualEntity> findIndividualById(Long id);
+
     TblNpaPaymentIndividualEntity initiateAndSave(
             String paymentRefNo,
             String nid,

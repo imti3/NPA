@@ -21,9 +21,10 @@ public class TblNpaPaymentIndividualEntity {
     @Column(name = "CustTblId")
     private Long custTblId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CustTblId", referencedColumnName = "Id", insertable = false, updatable = false)
     private TblNpaCustomerEntity customer;
+
 
 
     @Column(name = "Pid")

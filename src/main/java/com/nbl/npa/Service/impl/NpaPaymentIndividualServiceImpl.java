@@ -194,7 +194,7 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
 
                     payment.setBankTxnId(transactionId);
                     payment.setPaidAmount(BigDecimal.valueOf(paidAmount));
-                    payment.setTransactionStatus(1); // Optional, if confirmed
+                    payment.setTransactionStatus(1);
 
                     paymentRepo.save(payment); // <-- Save the updated payment here
                     // Optionally update payment entity here, if needed
@@ -353,6 +353,10 @@ public class NpaPaymentIndividualServiceImpl implements NpaPaymentIndividualServ
 //        }
 //    }
 
+
+    public Optional<TblNpaPaymentIndividualEntity> findIndividualById(Long id) {
+        return paymentRepo.findById(id);
+    }
 
     private MultiValueMap<String, String> getFormData(TblNpaPaymentIndividualEntity payment, String username, String transactionId) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();

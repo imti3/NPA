@@ -2,134 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Payment Receipt - National Pension</title>
+    <title>Payment Confirmation - National Pension</title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.png"/>
     <link href="/css/styles.css" rel="stylesheet"/>
     <script src="/js/fontawesome_all.min.js"></script>
-
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            background-color: #f8f9fa;
-        }
-
-        .receipt-card {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 30px;
-            border-radius: 15px;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .receipt-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .receipt-header h2 {
-            font-weight: 700;
-            color: #198754;
-        }
-
-        .receipt-item {
-            font-size: 16px;
-        }
-
-        .btn-print {
-            margin-top: 30px;
-        }
-
-        .footer-text {
-            display: none;
-            text-align: center;
-            margin-top: 40px;
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        @media print {
-            body, html {
-                margin: 0;
-                padding: 0;
-                height: auto;
-                overflow: visible;
-                background: white;
-            }
-
-            body * {
-                visibility: hidden;
-            }
-
-            .receipt-card, .receipt-card * {
-                visibility: visible;
-            }
-
-            .receipt-card {
-                margin: 0;
-                box-shadow: none;
-                page-break-inside: avoid;
-            }
-
-            .btn-print {
-                display: none;
-            }
-
-            .footer-text {
-                visibility: visible;
-                position: fixed;
-                bottom: 10px;
-                width: 100%;
-                text-align: center;
-                font-size: 12px;
-                color: #6c757d;
-            }
-        }
-    </style>
 </head>
 <body>
 
 <div class="container">
 
-    <div th:if="${paymentData != null}" class="receipt-card">
-        <div class="receipt-header text-center">
-            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-            <h2>Payment Successful</h2>
-            <p class="text-muted">Thank you for your payment. Below is your payment receipt.</p>
-            <hr>
-        </div>
-
-        <ul class="list-group mb-4">
-            <li class="list-group-item receipt-item">
-                <strong><i class="fas fa-id-card me-2"></i>Pensioner ID:</strong>
-                <span class="float-end" th:text="${paymentData != null ? paymentData.getPid() : ''}"></span>
-            </li>
-
-            <li class="list-group-item receipt-item">
-                <strong><i class="fas fa-money-bill-wave me-2"></i>Paid Installment Amount:</strong>
-                <span class="float-end" th:text="${paymentData != null ? paymentData.getPaidAmount() + ' BDT' : ''}"></span>
-            </li>
-
-            <li class="list-group-item receipt-item">
-                <strong><i class="fas fa-list-ol me-2"></i>Total Installments Paid:</strong>
-                <span class="float-end" th:text="${paymentData?.paidCount != null ? paymentData.paidCount : 'N/A'}"></span>
-            </li>
-
-            <li class="list-group-item receipt-item">
-                <strong><i class="fas fa-calendar-alt me-2"></i>Next Due Date:</strong>
-                <span class="float-end" th:text="${paymentData != null ? paymentData.getNextDueDate() : ''}"></span>
-            </li>
-
-            <li class="list-group-item receipt-item">
-                <strong><i class="fas fa-receipt me-2"></i>Transaction ID:</strong>
-                <span class="float-end" th:text="${paymentData != null ? paymentData.bankTxnId : ''}"></span>
-            </li>
-        </ul>
-
-        <div class="text-center">
-            <button class="btn btn-success rounded-pill px-4 btn-print" onclick="window.print()">
-                <i class="fas fa-print"></i> Print Receipt
-            </button>
+    <!-- Success Message -->
+    <div th:if="${slipUrl != null}" class="alert alert-success mt-5 text-center shadow-sm border-start border-4 border-success rounded-4">
+        <h4 class="alert-heading fw-bold"><i class="fas fa-check-circle me-2"></i>Payment Successful!</h4>
+        <p>Your payment was processed successfully.</p>
+        <div class="mt-3">
+            <a th:href="${slipUrl}" target="_blank" class="btn btn-success rounded-pill px-4">
+                <i class="fas fa-file-pdf"></i> Open Slip
+            </a>
         </div>
     </div>
 
@@ -146,10 +35,10 @@
 
 </div>
 
-<!-- Footer for both screen and print -->
-<div class="footer-text">
-    Powered by National Bank PLC. ITD
-</div>
+<!-- Auto-open slip -->
+<script th:if="${slipUrl != null}">
+    window.open([[${slipUrl}]], '_blank');
+</script>
 
 </body>
 </html>

@@ -177,13 +177,14 @@ public class MainController {
         String apiUrl = baseUrl + paymentStatusUrl;
         String apiToken = tokenService.getToken();
 
-        // Fetch individual payment from DB
-        TblNpaPaymentIndividualEntity payment = individualPaymentRepo.findByPaymentRefNo(paymentRefNo);
-        if (payment == null) {
+        Optional<TblNpaPaymentIndividualEntity> optionalPayment = individualPaymentRepo.findTopByPaymentRefNoOrderByEntryDateDesc(paymentRefNo);
+
+        TblNpaPaymentIndividualEntity payment = optionalPayment.orElseGet(() -> {
             log.warn("No individual payment found with PaymentRefNo {}", paymentRefNo);
-            payment = new TblNpaPaymentIndividualEntity();
-            payment.setPaymentRefNo(paymentRefNo);
-        }
+            TblNpaPaymentIndividualEntity fallback = new TblNpaPaymentIndividualEntity();
+            fallback.setPaymentRefNo(paymentRefNo);
+            return fallback;
+        });
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -199,7 +200,6 @@ public class MainController {
             ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, request, String.class);
             String responseBody = response.getBody();
 
-            // Log the API response
             npaLogService.saveLog(
                     payment.getNid(),
                     payment.getPid(),
@@ -219,17 +219,22 @@ public class MainController {
                 if ("200".equals(code)) {
                     Map<String, Object> data = (Map<String, Object>) responseMap.get("data");
 
-                    // Update payment fields based on response data
                     if (data != null) {
                         String transactionId = (String) data.get("TransactionId");
-                        Double paidAmount = data.get("PaidAmount") instanceof Number ? ((Number) data.get("PaidAmount")).doubleValue() : null;
+                        Double paidAmount = data.get("PaidAmount") instanceof Number
+                                ? ((Number) data.get("PaidAmount")).doubleValue()
+                                : null;
 
                         payment.setBankTxnId(transactionId);
                         if (paidAmount != null) {
                             payment.setPaidAmount(BigDecimal.valueOf(paidAmount));
                         }
                         payment.setTransactionStatus(1); // Mark as successful
-                        individualPaymentRepo.save(payment);
+
+                        // Only save if payment was found in DB
+                        if (optionalPayment.isPresent()) {
+                            individualPaymentRepo.save(payment);
+                        }
 
                         return Optional.of(data);
                     }
@@ -258,22 +263,26 @@ public class MainController {
         return Optional.empty();
     }
 
+
     public Optional<Map<String, Object>> verifyPaymentStatusCompany(String paymentRefNo) {
         String apiUrl = baseUrl + paymentStatusUrl;
         String apiToken = tokenService.getToken();
 
-        TblNpaCompanyPaymentEntity payment = companyPaymentRepo.findByPaymentRefNo(paymentRefNo);
-        if (payment == null) {
-            payment = new TblNpaCompanyPaymentEntity();
-            payment.setPaymentRefNo(paymentRefNo);
-        }
+        Optional<TblNpaCompanyPaymentEntity> optionalPayment = companyPaymentRepo.findTopByPaymentRefNoOrderByEntryDateDesc(paymentRefNo);
+
+        TblNpaCompanyPaymentEntity payment = optionalPayment.orElseGet(() -> {
+            log.warn("No company payment found with PaymentRefNo {}", paymentRefNo);
+            TblNpaCompanyPaymentEntity fallback = new TblNpaCompanyPaymentEntity();
+            fallback.setPaymentRefNo(paymentRefNo);
+            return fallback;
+        });
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setBearerAuth(apiToken);
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("UserId", username);  // Your configured API user
+        formData.add("UserId", username);
         formData.add("Payment_Ref_No", paymentRefNo);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(formData, headers);
@@ -300,7 +309,11 @@ public class MainController {
                 String code = (String) responseMap.get("code");
                 if ("200".equals(code)) {
                     payment.setTransactionStatus(1);
-                    companyPaymentRepo.save(payment);
+
+                    // Save only if it originally existed
+                    if (optionalPayment.isPresent()) {
+                        companyPaymentRepo.save(payment);
+                    }
 
                     return Optional.of(responseMap);
                 }
@@ -311,6 +324,7 @@ public class MainController {
 
         return Optional.empty();
     }
+
 
 
 
@@ -343,7 +357,7 @@ public class MainController {
             if (companyPayment != null) {
                 responseOpt = verifyPaymentStatusCompany(paymentRefNo);
             } else {
-                TblNpaPaymentIndividualEntity individualPayment = individualPaymentRepo.findByPaymentRefNo(paymentRefNo);
+                Optional<TblNpaPaymentIndividualEntity> individualPayment = individualPaymentRepo.findTopByBankTxnIdOrderByEntryDateDesc(bankTxnId);
                 if (individualPayment != null) {
 
                     responseOpt = verifyPaymentStatusIndivi(paymentRefNo);

@@ -30,6 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/change-password")
 
 
+
         ;
     }
     @Bean

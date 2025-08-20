@@ -1,8 +1,11 @@
 package com.nbl.npa.Config;
 
+import com.nbl.npa.Model.Entities.TblConfigurationEntity;
+import com.nbl.npa.Model.Repo.ConfigurationRepository;
 import com.nbl.npa.Service.AuthenticationService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -26,14 +29,17 @@ import org.springframework.web.client.RestTemplate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
-    @Value("${NPA.USERNAME}")
-    private String username;
+    private final ConfigurationRepository configurationRepository;
 
-    @Value("${NPA.PASSWORD}")
-    private String password;
+//    @Value("${NPA.USERNAME}")
+//    private String username;
+//
+//    @Value("${NPA.PASSWORD}")
+//    private String password;
 
 
     @Bean
@@ -51,27 +57,27 @@ public class SecurityConfig {
 //        System.out.println("DEBUG: SecurityConfig UserDetailsService configured with username: '" + user.getUsername() + "'");
 //        return new InMemoryUserDetailsManager(user);
 //    }
-
-    @Bean // Your custom UserDetailsService bean defined directly here
+    @Bean
     public UserDetailsService userDetailsService() {
-        // Encode the password once when the bean is created
-        final String encodedPassword = passwordEncoder().encode(password);
-        final String configuredUsername = username; // Capture for use in inner class
+        TblConfigurationEntity configurationEntity = configurationRepository.findFirstByOrderByIdAsc();
+        if (configurationEntity == null) {
+            throw new IllegalStateException("No configuration entity found in the database.");
+        }
+        final String encodedPassword = passwordEncoder().encode(configurationEntity.getPassword());
+        final String configuredUsername = configurationEntity.getUserId();
 
         System.out.println("DEBUG: SecurityConfig UserDetailsService Bean initialized. Configured Username: '" + configuredUsername + "'");
-
 
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String inputUsername) throws UsernameNotFoundException {
                 System.out.println("DEBUG: Anonymous UserDetailsService attempting to load username: '" + inputUsername + "' (comparing with stored: '" + configuredUsername + "')");
 
-                // Perform explicit case-sensitive comparison
                 if (inputUsername.equals(configuredUsername)) {
                     return User.builder()
-                            .username(configuredUsername) // Use the exact configured username
-                            .password(encodedPassword)   // Use the pre-encoded password
-                            .roles("USER")               // Assign roles as needed
+                            .username(configuredUsername)
+                            .password(encodedPassword)
+                            .roles("USER")
                             .build();
                 } else {
                     System.out.println("DEBUG: Username '" + inputUsername + "' not found or case mismatch.");
@@ -80,14 +86,6 @@ public class SecurityConfig {
             }
         };
     }
-
-
-
-
-
-
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -121,9 +119,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/paymentstatus").authenticated()
                         .requestMatchers(HttpMethod.POST, "/change-password").authenticated()
                         .requestMatchers(HttpMethod.POST,"/report-print/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"pension/slip/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/company/slip/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/error/403")
+                )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

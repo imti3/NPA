@@ -34,6 +34,7 @@ public interface NpaCompanyRepository  extends JpaRepository<TblNpaCompanyPaymen
 
         // Find payment by paymentRefNo
         TblNpaCompanyPaymentEntity findByPaymentRefNo(String paymentRefNo);
+        Optional<TblNpaCompanyPaymentEntity> findTopByPaymentRefNoOrderByEntryDateDesc(String paymentRefNo);
         Optional<TblNpaCompanyPaymentEntity> findTopByBankTxnIdOrderByEntryDateDesc(String bankTxnId);
 
 

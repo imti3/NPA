@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nbl.npa.Config.AES256;
 import com.nbl.npa.Model.Entities.TblNpaCompanyPaymentEntity;
+import com.nbl.npa.Model.Entities.TblNpaPaymentIndividualEntity;
 import com.nbl.npa.Model.Repo.NpaCompanyRepository;
 import com.nbl.npa.Service.NpaCompanyPaymentService;
 import com.nbl.npa.Service.NpaLogService;
@@ -55,6 +56,11 @@ public class NpaCompanyPaymentServiceImpl implements NpaCompanyPaymentService {
 
     @Autowired
     HttpSession session;
+
+
+    public Optional<TblNpaCompanyPaymentEntity> findById(Long id) {
+        return paymentRepo.findById(id);
+    }
 
     @Override
     public TblNpaCompanyPaymentEntity initiateAndSave(

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Error - NBL Portal</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
+    <link href="/src/assets/css/fontawesome/all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body class="min-vh-100 d-flex flex-column">
+
+<!-- Header -->
+<div th:insert="~{frontend/fragments/header :: header}"></div>
+
+<main class="container-fluid mt-5 mb-5">
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+            <div class="col-lg-8 col-md-10">
+                <div class="card border-0 shadow-lg rounded-4 fade-up overflow-hidden">
+
+                    <!-- Gradient Top Bar -->
+                    <div class="p-3 bg-gradient-green text-white d-flex align-items-center gap-2">
+                        <i class="fas fa-circle-exclamation fa-xl"></i>
+                        <h5 class="mb-0 fw-semibold">System Error</h5>
+                    </div>
+
+                    <!-- Error Body -->
+                    <div class="card-body text-center px-5 py-4 bg-light">
+                        <h1 class="display-5 fw-bold text-danger mb-3">Something went wrong</h1>
+                        <p class="fs-5 text-muted mb-3">
+                            <span th:text="${message != null ? message : 'An unexpected error occurred.'}">Error Message</span>
+                        </p>
+
+                        <p class="text-secondary mb-4">
+                            <strong>Status Code:</strong> <span th:text="${status != null ? status : 'Unknown'}">500</span>
+                        </p>
+
+                        <a href="/" class="btn btn-danger rounded-pill px-5 shadow-sm">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<div th:insert="~{frontend/fragments/footer :: footer}"></div>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
