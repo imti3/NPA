@@ -32,7 +32,7 @@ public class NpaLogServiceImpl implements NpaLogService {
             paymentRefNo = paymentRefNo.substring(0, MAX_LENGTH);
         }
 
-        logger.info("Saving log for PaymentRefNo: {}", paymentRefNo);
+        //logger.info("Saving log for PaymentRefNo: {}", paymentRefNo);
 
         TblNpaLogEntity log = new TblNpaLogEntity();
         log.setPid(pid);
@@ -49,7 +49,7 @@ public class NpaLogServiceImpl implements NpaLogService {
         log.setEntryDate(LocalDateTime.now().format(formatter));
 
         logRepo.save(log);
-        logger.info("Log saved for PaymentRefNo: {}", paymentRefNo);
+//        logger.info("Log saved for PaymentRefNo: {}", paymentRefNo);
     }
 }
 

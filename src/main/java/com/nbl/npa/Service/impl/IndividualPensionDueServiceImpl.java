@@ -71,7 +71,7 @@ public class IndividualPensionDueServiceImpl implements IndividualPensionDueServ
             String pid = dto.getData().getPid();
             String paymentRefNo = dto.getData().getCreditAccDetails().getPaymentRefNo();
 
-            System.out.println(response.getBody());
+            //System.out.println(response.getBody());
             npaLogService.saveLog(
                     idNumber, pid, paymentRefNo,
                     null, decryptedBrCode, url, formData,

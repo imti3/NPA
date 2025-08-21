@@ -56,6 +56,9 @@ public class MainController {
     private final RestTemplate restTemplate;
     @Value("${api.base-url}")
     private String baseUrl;
+    @Value("${npa.report}")
+    private String reportPath;
+    private static final String FILE_NAME = "User_manual_Branch.pdf";
 
     @Value("${APIUSR}")
 
@@ -150,6 +153,8 @@ public class MainController {
         model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(),Cipher.DECRYPT_MODE));
         return "index";
     }
+
+
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {

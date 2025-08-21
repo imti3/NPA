@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.warn("Invalid or expired token: {}", ex.getMessage());
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("application/json");
-            response.getWriter().write("{\"code\": \"400\", \"message\": \"Token not match or expired\"}");
+            response.getWriter().write("{\"code\": \"400\", \"message\": " + ex.getMessage() + "\"}");
         }
     }
 

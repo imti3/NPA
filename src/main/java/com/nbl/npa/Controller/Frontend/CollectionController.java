@@ -118,7 +118,6 @@ public class CollectionController {
         params.put("p_user_name", userName);
         params.put("p_print_date", new java.util.Date());
 
-        // Prefer URL params if provided
         if (finalPaidAmount != null) {
             params.put("p_final_paid_amount", finalPaidAmount);
         } else if (entity != null) {
@@ -207,8 +206,8 @@ public class CollectionController {
         }
 
         // You can use idNumber and invoiceNo here
-        System.out.println("ID Number: " + idNumber);
-        System.out.println("Invoice No: " + invoiceNo);
+        //System.out.println("ID Number: " + idNumber);
+        //System.out.println("Invoice No: " + invoiceNo);
 
         model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(),Cipher.DECRYPT_MODE));
         model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(),Cipher.DECRYPT_MODE));

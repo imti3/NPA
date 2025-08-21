@@ -82,6 +82,31 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-md-4">
+                                        <div class="card shadow-sm border-0 rounded-4">
+                                            <div class="card-body px-4">
+                                                <div class="mb-2 text-start">
+                                                    <label for="exampleFormControlTextarea1"
+                                                           class="form-label fw-bold text-green mb-2" id="inputLabel">ID Number</label>
+                                                </div>
+                                                <div class="input-group rounded-3">
+                    <span class="input-group-text bg-light border-0">
+                        <i class="fas fa-keyboard text-success fs-5"></i>
+                    </span>
+                                                    <input type="text" class="form-control border-0 shadow-none"
+                                                           id="exampleFormControlTextarea1" name="idNumber"
+                                                           placeholder="Enter NID/PID Number"
+                                                           oncopy="return false"
+                                                           oncut="return false">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="notice" class="alert alert-danger py-2 px-3 mt-3 mb-0 border-start border-4 border-danger rounded-3 small">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
+                                            <strong>Important:</strong> For 13-digit NID number, please include the applicant's Birth Year before the NID (e.g., <code>19901234567890123</code>).
+                                        </div>
+                                    </div>
+
                                     <!--Card for company invoice no  Need Only For Company-->
                                     <div class="col-md-4" id="CompanyInvoice" style="display: none;">
                                         <div class="card shadow-sm border-0 rounded-4">
@@ -106,33 +131,7 @@
                                     </div>
 
 
-                                    <!-- Card 3: ID Input -->
-                                    <div class="col-md-4">
-                                        <div class="card shadow-sm border-0 rounded-4">
-                                            <div class="card-body px-4">
-                                                <div class="mb-2 text-start">
-                                                    <label for="exampleFormControlTextarea1"
-                                                           class="form-label fw-bold text-green mb-2" id="inputLabel">ID
-                                                        Number</label>
-                                                </div>
-                                                <div class="input-group rounded-3">
-                        <span class="input-group-text bg-light border-0">
-                            <i class="fas fa-keyboard text-success fs-5"></i>
-                        </span>
-                                                    <input type="text" class="form-control border-0 shadow-none"
-                                                           id="exampleFormControlTextarea1" name="idNumber"
-                                                           placeholder="Enter NID/PID Number"
-                                                           oncopy="return false"
-                                                           oncut="return false">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="notice" class="alert alert-danger py-2 px-3 mt-3 mb-0 border-start border-4 border-danger rounded-3 small">
-                                            <i class="fas fa-exclamation-circle me-2"></i>
-                                            <strong>Important:</strong> For 13-digit NID number, please include the applicant's Birth Year before the NID (e.g., <code>19901234567890123</code>).
-                                        </div>
 
-                                    </div>
                                 </div>
                                 <div class="d-flex justify-content-center pt-4">
                                     <button type="submit" class="btn btn-success">Next</button>

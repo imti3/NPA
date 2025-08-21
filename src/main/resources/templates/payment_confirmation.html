@@ -15,9 +15,12 @@
     <div th:if="${slipUrl != null}" class="alert alert-success mt-5 text-center shadow-sm border-start border-4 border-success rounded-4">
         <h4 class="alert-heading fw-bold"><i class="fas fa-check-circle me-2"></i>Payment Successful!</h4>
         <p>Your payment was processed successfully.</p>
-        <div class="mt-3">
+        <div class="mt-3 d-flex justify-content-center gap-3">
             <a th:href="${slipUrl}" target="_blank" class="btn btn-success rounded-pill px-4">
                 <i class="fas fa-file-pdf"></i> Open Slip
+            </a>
+            <a href="/pension_collect" class="btn btn-outline-primary rounded-pill px-4">
+                <i class="fas fa-plus-circle"></i> Take Another Payment
             </a>
         </div>
     </div>

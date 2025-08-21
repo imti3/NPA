@@ -66,12 +66,12 @@ public class SecurityConfig {
         final String encodedPassword = passwordEncoder().encode(configurationEntity.getPassword());
         final String configuredUsername = configurationEntity.getUserId();
 
-        System.out.println("DEBUG: SecurityConfig UserDetailsService Bean initialized. Configured Username: '" + configuredUsername + "'");
+        //System.out.println("DEBUG: SecurityConfig UserDetailsService Bean initialized. Configured Username: '" + configuredUsername + "'");
 
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String inputUsername) throws UsernameNotFoundException {
-                System.out.println("DEBUG: Anonymous UserDetailsService attempting to load username: '" + inputUsername + "' (comparing with stored: '" + configuredUsername + "')");
+//                System.out.println("DEBUG: Anonymous UserDetailsService attempting to load username: '" + inputUsername + "' (comparing with stored: '" + configuredUsername + "')");
 
                 if (inputUsername.equals(configuredUsername)) {
                     return User.builder()
@@ -80,7 +80,7 @@ public class SecurityConfig {
                             .roles("USER")
                             .build();
                 } else {
-                    System.out.println("DEBUG: Username '" + inputUsername + "' not found or case mismatch.");
+//                    System.out.println("DEBUG: Username '" + inputUsername + "' not found or case mismatch.");
                     throw new UsernameNotFoundException("User not found with username: " + inputUsername);
                 }
             }
@@ -119,8 +119,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/paymentstatus").authenticated()
                         .requestMatchers(HttpMethod.POST, "/change-password").authenticated()
                         .requestMatchers(HttpMethod.POST,"/report-print/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"pension/slip/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/pension/slip/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/company/slip/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/manual/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

@@ -69,19 +69,19 @@ public class PaymentStatusController {
 
             // 1. Try to find in individual payment
             Optional<TblNpaPaymentIndividualEntity> individualOpt = individualPaymentRepo
-                    .findByPaymentRefNoAndExpiredCaseSensitive(paymentRefNo, 0);
+                    .findByPaymentRefNoAndExpiredCaseSensitive(paymentRefNo, 1);
 
             if (individualOpt.isPresent()) {
                 TblNpaPaymentIndividualEntity entity = individualOpt.get();
 
                 response.put("code", (entity.getTransactionStatus() == 0 || entity.getTransactionStatus() == 1) ? "200" : "400");
                 response.put("message", (entity.getTransactionStatus() == 0 || entity.getTransactionStatus() == 1) ? "Successful" : "Unsuccessful");
-                response.put("transactionId", entity.getBankTxnId());
-                response.put("paidAmount", entity.getPaidAmount());
-                response.put("commissionAmount", entity.getCommissionAmount());
-                response.put("vatAmount", entity.getVATAmount());
-                response.put("payMode", entity.getPayMode());
-                response.put("additionalAmount", entity.getAdditionalAmount());
+                response.put("TransactionId", entity.getBankTxnId());
+                response.put("Paid_Amount", entity.getPaidAmount());
+                response.put("Commission_Amount", entity.getCommissionAmount());
+                response.put("Vat_Amount", entity.getVATAmount());
+                response.put("Pay_Mode", entity.getPayMode());
+                response.put("Additional_Amount", entity.getAdditionalAmount());
 
                 npaLogService.saveLog(
                         entity.getNid(),
@@ -107,12 +107,12 @@ public class PaymentStatusController {
 
                 response.put("code", (entity.getTransactionStatus() == 0 || entity.getTransactionStatus() == 1) ? "200" : "400");
                 response.put("message", (entity.getTransactionStatus() == 0 || entity.getTransactionStatus() == 1) ? "Successful" : "Unsuccessful");
-                response.put("transactionId", entity.getBankTxnId());
-                response.put("paidAmount", entity.getPayingAmount());
-                response.put("commissionAmount", entity.getCommissionAmount());
-                response.put("vatAmount", entity.getVatAmount());
-                response.put("payMode", entity.getPayMode());
-                response.put("additionalAmount", BigDecimal.ZERO);  // If company entity has no additionalAmount
+                response.put("TransactionId", entity.getBankTxnId());
+                response.put("Paid_Amount", entity.getPayingAmount());
+                response.put("Commission_Amount", entity.getCommissionAmount());
+                response.put("VAT_Amount", entity.getVatAmount());
+                response.put("Pay_Mode", entity.getPayMode());
+                response.put("Additional_Amount", BigDecimal.ZERO);  // If company entity has no additionalAmount
 
                 npaLogService.saveLog(
                         null,

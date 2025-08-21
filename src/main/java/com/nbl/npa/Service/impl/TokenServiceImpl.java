@@ -63,7 +63,7 @@ public class TokenServiceImpl implements TokenService {
 
         try {
             ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
-            System.out.println("Raw response: " + response.getBody());
+            //System.out.println("Raw response: " + response.getBody());
 
             Integer brcode=(Integer.parseInt(AES256.processCrypto(session.getAttribute("brCode").toString(), Cipher.DECRYPT_MODE)));
 
@@ -97,7 +97,7 @@ public class TokenServiceImpl implements TokenService {
                 ((currentTime - tokenFetchTime) >= ((expiresIn * 1000L) - bufferMillis));
 
         if (tokenExpired) {
-            System.out.println("Token expired or about to expire within 10 minutes. Fetching new token...");
+            //System.out.println("Token expired or about to expire within 10 minutes. Fetching new token...");
             fetchToken();
         }
 
@@ -107,13 +107,13 @@ public class TokenServiceImpl implements TokenService {
             long remainingMinutes = remainingMillis / (60 * 1000);
             long remainingSeconds = (remainingMillis / 1000) % 60;
 
-            System.out.println("Token remaining time: " + remainingMinutes + " minutes " + remainingSeconds + " seconds");
+            //System.out.println("Token remaining time: " + remainingMinutes + " minutes " + remainingSeconds + " seconds");
 
             if (remainingMillis <= bufferMillis) {
-                System.out.println("Token is within the 10-minute buffer window and will be refreshed soon.");
+                //System.out.println("Token is within the 10-minute buffer window and will be refreshed soon.");
             }
         } else {
-            System.out.println("No token fetched yet.");
+            //System.out.println("No token fetched yet.");
         }
 
         return accessToken;

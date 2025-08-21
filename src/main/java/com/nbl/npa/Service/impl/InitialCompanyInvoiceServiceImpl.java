@@ -59,7 +59,7 @@ public class InitialCompanyInvoiceServiceImpl implements InitialCompanyInvoiceSe
                 CompanyInvoiceDTO.class
         );
 
-        System.out.println(response.getBody());
+        //System.out.println(response.getBody());
 
 //        npaLogService.saveLog(
 //                InvoiceNO, idNumber, null

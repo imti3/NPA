@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Company Payment Confirmation - National Pension</title>
@@ -17,9 +17,12 @@
             <i class="fas fa-check-circle me-2"></i> Company Payment Successful!
         </h4>
         <p>Your company payment was processed successfully.</p>
-        <div class="mt-3">
+        <div class="mt-3 d-flex justify-content-center gap-3">
             <a th:href="${slipUrl}" target="_blank" class="btn btn-success rounded-pill px-4">
                 <i class="fas fa-file-pdf"></i> Open Company Slip
+            </a>
+            <a href="/pension_collect" class="btn btn-outline-primary rounded-pill px-4">
+                <i class="fas fa-plus-circle"></i> Take Another Payment
             </a>
         </div>
     </div>
@@ -31,7 +34,7 @@
         </h4>
         <p th:text="${errorMessage}"></p>
         <div class="text-center mt-4">
-            <a href="/company_payment_form" class="btn btn-outline-danger rounded-pill px-4">
+            <a href="/pension_collect" class="btn btn-outline-danger rounded-pill px-4">
                 <i class="fas fa-redo-alt"></i> Try Again
             </a>
         </div>
