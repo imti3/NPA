@@ -57,20 +57,6 @@ public class ReportController {
     @Autowired
     Credentials creds;
 
-//    @GetMapping("/pension_report")
-//    public String report(Model model) {
-//        model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(), Cipher.DECRYPT_MODE));
-//        model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(),Cipher.DECRYPT_MODE));
-//        return "pension_report";
-//    }
-
-
-
-
-
-
-
-
     @GetMapping(value = "/pension_report")
     public String report(@RequestParam(required = false) String fromDate,
                          @RequestParam(required = false) String toDate,
@@ -128,13 +114,13 @@ public class ReportController {
         try {
             report = reportCompilation.compileReports(reportId);
         } catch (FileNotFoundException e){
-            System.out.println("|EX-SA-RC-01: " + e.getMessage());
+            LOG.error("|EX-SA-RC-01: {}", e.getMessage(), e);
         } catch (IOException e){
-            System.out.println("|EX-SA-RC-02: " + e.getMessage());
+            LOG.error("|EX-SA-RC-02: {}", e.getMessage(), e);
         } catch (JRException e){
-            System.out.println("|EX-SA-RC-03: " + e.getMessage());
+            LOG.error("|EX-SA-RC-03: {}", e.getMessage(), e);
         } catch (Exception e){
-            System.out.println("|EX-SA-RC-04: " + e.getMessage());
+            LOG.error("|EX-SA-RC-04: {}", e.getMessage(), e);
         }
 
         byte[]              bytes      = reportExporter.uploadPDFReport(reportId, report, parameters, response);

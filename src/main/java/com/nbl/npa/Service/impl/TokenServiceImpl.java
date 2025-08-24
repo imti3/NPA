@@ -6,10 +6,11 @@ import com.nbl.npa.Service.NpaLogService;
 import com.nbl.npa.Service.TokenService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -22,6 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TokenServiceImpl.class);
     private final NpaLogService npaLogService;
 
     @Value("${api.base-url}")
@@ -63,7 +65,6 @@ public class TokenServiceImpl implements TokenService {
 
         try {
             ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
-            //System.out.println("Raw response: " + response.getBody());
 
             Integer brcode=(Integer.parseInt(AES256.processCrypto(session.getAttribute("brCode").toString(), Cipher.DECRYPT_MODE)));
 
@@ -79,11 +80,10 @@ public class TokenServiceImpl implements TokenService {
                 this.expiresIn = (Integer) response.getBody().get("expires_in");
                 this.tokenFetchTime = System.currentTimeMillis();
             } else {
-                System.err.println("Token request failed with status: " + response.getStatusCode());
+                LOG.error("Token request failed with status: {}", response.getStatusCode());
             }
         } catch (Exception e) {
-            System.err.println("Exception while fetching token:");
-            e.printStackTrace();
+            LOG.error("Exception while fetching token", e);
         }
     }
 
@@ -97,7 +97,6 @@ public class TokenServiceImpl implements TokenService {
                 ((currentTime - tokenFetchTime) >= ((expiresIn * 1000L) - bufferMillis));
 
         if (tokenExpired) {
-            //System.out.println("Token expired or about to expire within 10 minutes. Fetching new token...");
             fetchToken();
         }
 
@@ -107,13 +106,9 @@ public class TokenServiceImpl implements TokenService {
             long remainingMinutes = remainingMillis / (60 * 1000);
             long remainingSeconds = (remainingMillis / 1000) % 60;
 
-            //System.out.println("Token remaining time: " + remainingMinutes + " minutes " + remainingSeconds + " seconds");
-
             if (remainingMillis <= bufferMillis) {
-                //System.out.println("Token is within the 10-minute buffer window and will be refreshed soon.");
+                // Token will be refreshed soon
             }
-        } else {
-            //System.out.println("No token fetched yet.");
         }
 
         return accessToken;

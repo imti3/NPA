@@ -206,10 +206,6 @@ public class CollectionController {
             model.addAttribute("errorMessage", response.getMessage());
         }
 
-        // You can use idNumber and invoiceNo here
-        //System.out.println("ID Number: " + idNumber);
-        //System.out.println("Invoice No: " + invoiceNo);
-
         model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(),Cipher.DECRYPT_MODE));
         model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(),Cipher.DECRYPT_MODE));
 
@@ -368,35 +364,6 @@ public class CollectionController {
 
 
 
-
-
-
-
-
-
-
-
-    // Handle POST request from Step 1 form submission
-//    @PostMapping("/pension_collect")
-//    public String processForm(
-//            @RequestParam("type") String pensionerType,
-//            @RequestParam("nidType") String nidType,
-//            @RequestParam("idNumber") String idNumber,
-//            Model model) {
-//        // Log or process pensionerType and nidType if needed
-//        System.out.println("Pensioner Type: " + pensionerType);
-//        System.out.println("ID Type: " + nidType);
-//
-//        // Fetch pension data using idNumber
-//        IntitialPamentIndividualDTO response = intialPamentIndividualService.getPensionerDetails(idNumber);
-//        model.addAttribute("pensionData", response.getData());
-//
-//        // Pass pensionerType and nidType to the view if needed
-//        model.addAttribute("pensionerType", pensionerType);
-//        model.addAttribute("nidType", nidType);
-//
-//        return "pension";
-//    }
 
 
 }
