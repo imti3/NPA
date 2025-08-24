@@ -7,6 +7,8 @@ import com.nbl.npa.Model.Repo.ConfigurationRepository;
 import com.nbl.npa.Service.NpaLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -22,6 +24,8 @@ import java.util.Map;
 @RequestMapping("/change-password")
 @RequiredArgsConstructor
 public class ChangePasswordController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ChangePasswordController.class);
 
     private final ConfigurationRepository configRepo;
     private final NpaLogService npaLogService;
@@ -69,7 +73,7 @@ public class ChangePasswordController {
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Internal server error during password change", e);
             response.put("code", 500);
             response.put("message", "Internal server error: " + e.getMessage());
             log(endpoint, request, response, request.getUsername());

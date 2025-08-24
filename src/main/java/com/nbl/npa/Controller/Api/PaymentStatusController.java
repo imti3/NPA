@@ -8,7 +8,8 @@ import com.nbl.npa.Model.Repo.NpaCompanyRepository;
 import com.nbl.npa.Model.Repo.NpaIndividualRepository;
 import com.nbl.npa.Service.NpaLogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,17 +26,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PaymentStatusController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PaymentStatusController.class);
+
     private final ConfigurationRepository configurationRepository;
     private final NpaIndividualRepository individualPaymentRepo;
     private final NpaCompanyRepository companyPaymentRepo;  // New repo for company payments
     private final NpaLogService npaLogService;
-    String username;
 
     @PostMapping
     public ResponseEntity<?> getStatus(@RequestBody Map<String, String> request) {
 
         // Fetch username from configuration repository
-      username = configurationRepository.findFirstByOrderByIdAsc().getUserId();
+        String username = getUsername();
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         request.forEach(formData::add);
@@ -140,7 +142,7 @@ public class PaymentStatusController {
             return ResponseEntity.badRequest().body(response);
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.error("Error checking payment status", ex);
             response.put("code", "400");
             response.put("message", "Error occurred: " + ex.getMessage());
 
@@ -158,10 +160,17 @@ public class PaymentStatusController {
         response.put("code", "400");
         response.put("message", "Malformed JSON request");
 
+        String username = getUsername();
         npaLogService.saveLog(null, null, null, null, null,
                 "/paymentstatus", null, new Gson().toJson(response), username);
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    private String getUsername() {
+        return Optional.ofNullable(configurationRepository.findFirstByOrderByIdAsc())
+                .map(cfg -> cfg.getUserId())
+                .orElse("unknown");
     }
 }
 

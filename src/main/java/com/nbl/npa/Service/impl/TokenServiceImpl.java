@@ -6,10 +6,11 @@ import com.nbl.npa.Service.NpaLogService;
 import com.nbl.npa.Service.TokenService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -22,6 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TokenServiceImpl.class);
     private final NpaLogService npaLogService;
 
     @Value("${api.base-url}")
@@ -31,7 +33,7 @@ public class TokenServiceImpl implements TokenService {
     private String tokenPath;
 
     @Value("${APIUSR}")
-    private String APIUSR;
+    private String apiUser;
 
     @Value("${password}")
     private String password;
@@ -40,9 +42,10 @@ public class TokenServiceImpl implements TokenService {
     private String grantType;
 
     private String accessToken;
-    private String tokenType;
     private Integer expiresIn;
     private Long tokenFetchTime;
+
+    private static final Gson GSON = new Gson();
 
     private final RestTemplate restTemplate = new RestTemplate();
     @Autowired
@@ -55,35 +58,39 @@ public class TokenServiceImpl implements TokenService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("username", APIUSR);
+        map.add("username", apiUser);
         map.add("password", password);
         map.add("grant_type", grantType);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
         try {
-            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
-            //System.out.println("Raw response: " + response.getBody());
+            ResponseEntity<Map<String, Object>> response = restTemplate.postForEntity(url, request, Map.class);
 
-            Integer brcode=(Integer.parseInt(AES256.processCrypto(session.getAttribute("brCode").toString(), Cipher.DECRYPT_MODE)));
-
-            String userId=(AES256.processCrypto(session.getAttribute("userId").toString(),Cipher.DECRYPT_MODE));
-            npaLogService.saveLog(
-                    null, null, null
-                    , null,
-                    brcode, url, map, new Gson().toJson(response.getBody()), userId);
+            Integer brcode = null;
+            String userId = null;
+            Object brAttr = session.getAttribute("brCode");
+            Object userAttr = session.getAttribute("userId");
+            if (brAttr instanceof String brEnc) {
+                String brDecrypted = AES256.processCrypto(brEnc, Cipher.DECRYPT_MODE);
+                if (brDecrypted != null) {
+                    brcode = Integer.parseInt(brDecrypted);
+                }
+            }
+            if (userAttr instanceof String userEnc) {
+                userId = AES256.processCrypto(userEnc, Cipher.DECRYPT_MODE);
+            }
+            npaLogService.saveLog(null, null, null, null, brcode, url, map, GSON.toJson(response.getBody()), userId);
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 this.accessToken = (String) response.getBody().get("access_token");
-                this.tokenType = (String) response.getBody().get("token_type");
                 this.expiresIn = (Integer) response.getBody().get("expires_in");
                 this.tokenFetchTime = System.currentTimeMillis();
             } else {
-                System.err.println("Token request failed with status: " + response.getStatusCode());
+                LOG.error("Token request failed with status: {}", response.getStatusCode());
             }
         } catch (Exception e) {
-            System.err.println("Exception while fetching token:");
-            e.printStackTrace();
+            LOG.error("Exception while fetching token", e);
         }
     }
 
@@ -92,30 +99,12 @@ public class TokenServiceImpl implements TokenService {
         long currentTime = System.currentTimeMillis();
         long bufferMillis = 10 * 60 * 1000; // 10 minutes
 
-        boolean tokenExpired = (accessToken == null) ||
-                (tokenFetchTime == 0) ||
-                ((currentTime - tokenFetchTime) >= ((expiresIn * 1000L) - bufferMillis));
+        boolean tokenExpired = accessToken == null || tokenFetchTime == null || expiresIn == null
+                || (currentTime - tokenFetchTime) >= ((expiresIn * 1000L) - bufferMillis);
 
         if (tokenExpired) {
-            //System.out.println("Token expired or about to expire within 10 minutes. Fetching new token...");
             fetchToken();
         }
-
-        if (accessToken != null && tokenFetchTime > 0) {
-            long elapsedTimeMillis = currentTime - tokenFetchTime;
-            long remainingMillis = (expiresIn * 1000L) - elapsedTimeMillis;
-            long remainingMinutes = remainingMillis / (60 * 1000);
-            long remainingSeconds = (remainingMillis / 1000) % 60;
-
-            //System.out.println("Token remaining time: " + remainingMinutes + " minutes " + remainingSeconds + " seconds");
-
-            if (remainingMillis <= bufferMillis) {
-                //System.out.println("Token is within the 10-minute buffer window and will be refreshed soon.");
-            }
-        } else {
-            //System.out.println("No token fetched yet.");
-        }
-
         return accessToken;
     }
 

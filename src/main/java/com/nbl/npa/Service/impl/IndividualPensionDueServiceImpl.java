@@ -6,6 +6,8 @@ import com.nbl.npa.Service.IndividualPensionDueService;
 import com.nbl.npa.Service.NpaLogService;
 import com.nbl.npa.Service.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public class IndividualPensionDueServiceImpl implements IndividualPensionDueService {
+    private static final Logger LOG = LoggerFactory.getLogger(IndividualPensionDueServiceImpl.class);
     private final RestTemplate restTemplate;
     private final TokenService tokenService;
     private final NpaLogService npaLogService;
@@ -71,7 +74,6 @@ public class IndividualPensionDueServiceImpl implements IndividualPensionDueServ
             String pid = dto.getData().getPid();
             String paymentRefNo = dto.getData().getCreditAccDetails().getPaymentRefNo();
 
-            //System.out.println(response.getBody());
             npaLogService.saveLog(
                     idNumber, pid, paymentRefNo,
                     null, decryptedBrCode, url, formData,
@@ -79,7 +81,7 @@ public class IndividualPensionDueServiceImpl implements IndividualPensionDueServ
             );
 
         } else {
-            System.err.println("Error: " + dto.getMessage());
+            LOG.error("Error: {}", dto.getMessage());
             npaLogService.saveLog(
                     idNumber, null, null,
                     null, null, url, formData,
