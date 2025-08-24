@@ -15,10 +15,19 @@ public final class AES256 {
 
     private static final Logger LOG = LoggerFactory.getLogger(AES256.class);
 
-    private static final String PASSWORD = "KJH#$@kds32@!kjhdkftt";
-    private static final String IV = "16806642kbM7c5!$";
-    private static final byte[] SALT = new byte[] { 34, (byte) 134, (byte) 145, 12, 7, 6, (byte) 243, 63, 43, 54, 75, 65,
-            53, 2, 34, 54, 45, 67, 64, 64, 32, (byte) 213 };
+    private static final String PASSWORD;
+    private static final String IV;
+    private static final byte[] SALT;
+
+    static {
+        PASSWORD = System.getenv("AES_PASSWORD");
+        IV = System.getenv("AES_IV");
+        String saltEnc = System.getenv("AES_SALT");
+        if (PASSWORD == null || IV == null || saltEnc == null) {
+            throw new IllegalStateException("AES environment variables not configured");
+        }
+        SALT = Base64.getDecoder().decode(saltEnc);
+    }
 
     private AES256() {
         // utility class

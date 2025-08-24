@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Cipher;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -41,15 +42,14 @@ public class TokenServiceImpl implements TokenService {
     @Value("${grant_type}")
     private String grantType;
 
-    private String accessToken;
-    private Integer expiresIn;
-    private Long tokenFetchTime;
+    private final AtomicReference<String> accessToken = new AtomicReference<>();
+    private final AtomicLong expiresIn = new AtomicLong();
+    private final AtomicLong tokenFetchTime = new AtomicLong();
 
     private static final Gson GSON = new Gson();
 
-    private final RestTemplate restTemplate = new RestTemplate();
-    @Autowired
-    HttpSession session;
+    private final RestTemplate restTemplate;
+    private final HttpSession session;
 
     @Override
     public void fetchToken() {
@@ -83,9 +83,12 @@ public class TokenServiceImpl implements TokenService {
             npaLogService.saveLog(null, null, null, null, brcode, url, map, GSON.toJson(response.getBody()), userId);
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                this.accessToken = (String) response.getBody().get("access_token");
-                this.expiresIn = (Integer) response.getBody().get("expires_in");
-                this.tokenFetchTime = System.currentTimeMillis();
+                accessToken.set((String) response.getBody().get("access_token"));
+                Integer expires = (Integer) response.getBody().get("expires_in");
+                if (expires != null) {
+                    expiresIn.set(expires.longValue());
+                }
+                tokenFetchTime.set(System.currentTimeMillis());
             } else {
                 LOG.error("Token request failed with status: {}", response.getStatusCode());
             }
@@ -99,13 +102,16 @@ public class TokenServiceImpl implements TokenService {
         long currentTime = System.currentTimeMillis();
         long bufferMillis = 10 * 60 * 1000; // 10 minutes
 
-        boolean tokenExpired = accessToken == null || tokenFetchTime == null || expiresIn == null
-                || (currentTime - tokenFetchTime) >= ((expiresIn * 1000L) - bufferMillis);
+        long expires = expiresIn.get();
+        long fetched = tokenFetchTime.get();
+        String token = accessToken.get();
+        boolean tokenExpired = token == null || fetched == 0 || expires == 0
+                || (currentTime - fetched) >= ((expires * 1000L) - bufferMillis);
 
         if (tokenExpired) {
             fetchToken();
         }
-        return accessToken;
+        return accessToken.get();
     }
 
 

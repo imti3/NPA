@@ -6,6 +6,8 @@ import com.nbl.npa.Service.AuthenticationService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 public class SecurityConfig {
 
     private final ConfigurationRepository configurationRepository;
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityConfig.class);
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationService authenticationService) {
         return new JwtAuthenticationFilter(authenticationService);
@@ -39,7 +42,8 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         TblConfigurationEntity configurationEntity = configurationRepository.findFirstByOrderByIdAsc();
         if (configurationEntity == null) {
-            throw new IllegalStateException("No configuration entity found in the database.");
+            LOG.error("No configuration entity found in the database.");
+            throw new IllegalStateException("Missing security configuration");
         }
         final String encodedPassword = passwordEncoder().encode(configurationEntity.getPassword());
         final String configuredUsername = configurationEntity.getUserId();
