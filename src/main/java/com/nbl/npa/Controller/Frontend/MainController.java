@@ -56,9 +56,6 @@ public class MainController {
     private final RestTemplate restTemplate;
     @Value("${api.base-url}")
     private String baseUrl;
-    @Value("${npa.report}")
-    private String reportPath;
-    private static final String FILE_NAME = "User_manual_Branch.pdf";
 
     @Value("${APIUSR}")
 
@@ -80,7 +77,7 @@ public class MainController {
         if (userName != null && session.getAttribute("is_session") == null) {
             try {
 
-                session.setMaxInactiveInterval(5 * 60);
+                session.setMaxInactiveInterval(30 * 60);
                 session.setAttribute("userName", userName);
                 session.setAttribute("userId", userId);
                 session.setAttribute("userType", userType);
@@ -151,6 +148,7 @@ public class MainController {
     public String showDashboard(Model model) {
         model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(),Cipher.DECRYPT_MODE));
         model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(),Cipher.DECRYPT_MODE));
+        model.addAttribute("userType", AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE));
         return "index";
     }
 
@@ -340,6 +338,8 @@ public class MainController {
         // Add attributes to the model for the view
         model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(), Cipher.DECRYPT_MODE));
         model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(), Cipher.DECRYPT_MODE));
+        model.addAttribute("userType", AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE));
+
         return "verify_payment";
     }
 
@@ -379,6 +379,7 @@ public class MainController {
         // Add other needed attributes for the view
         model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(), Cipher.DECRYPT_MODE));
         model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(), Cipher.DECRYPT_MODE));
+        model.addAttribute("userType", AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE));
 
         return "verify_payment";
     }

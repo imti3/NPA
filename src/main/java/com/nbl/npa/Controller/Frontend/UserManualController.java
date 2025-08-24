@@ -32,7 +32,6 @@ public class UserManualController {
 
     private static final String FILE_NAME = "User_manual_Branch.pdf";
 
-    /** Open manual inline in browser */
     @GetMapping("/branch")
     public ResponseEntity<Resource> viewManual() {
         if (!isSessionValid()) {
@@ -79,7 +78,6 @@ public class UserManualController {
         }
     }
 
-    /** Helpers */
     private boolean isSessionValid() {
         return session.getAttribute("is_session") != null && (Boolean) session.getAttribute("is_session");
     }

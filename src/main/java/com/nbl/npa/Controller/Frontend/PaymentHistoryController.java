@@ -48,6 +48,7 @@ public class PaymentHistoryController {
 
         model.addAttribute("branchName", AES256.processCrypto(session.getAttribute("brName").toString(), Cipher.DECRYPT_MODE));
         model.addAttribute("userName", AES256.processCrypto(session.getAttribute("userId").toString(), Cipher.DECRYPT_MODE));
+        model.addAttribute("userType", AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE));
 
         Integer branch = (branchInfo == null || branchInfo.isEmpty()) ? null : Integer.valueOf(branchInfo);
         String userType = AES256.processCrypto(session.getAttribute("userType").toString(), Cipher.DECRYPT_MODE);
