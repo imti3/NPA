@@ -6,8 +6,12 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.spec.KeySpec;
 import java.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AES256 {
+
+        private static final Logger LOG = LoggerFactory.getLogger(AES256.class);
 
 	public static String processCrypto(String inputText, int type) {
 		final String password = "KJH#$@kds32@!kjhdkftt";
@@ -34,11 +38,11 @@ public class AES256 {
 				throw new IllegalArgumentException("Invalid cipher mode");
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+                } catch (Exception e) {
+                        LOG.error("Error during AES processing", e);
+                        return null;
+                }
+        }
 
 }
 

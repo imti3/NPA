@@ -26,37 +26,15 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
     private final ConfigurationRepository configurationRepository;
-
-//    @Value("${NPA.USERNAME}")
-//    private String username;
-//
-//    @Value("${NPA.PASSWORD}")
-//    private String password;
-
-
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationService authenticationService) {
         return new JwtAuthenticationFilter(authenticationService);
     }
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user = User.builder()
-//                .username(username) // This should be 'NPA@056Tst%'
-//                .password(passwordEncoder().encode(password))
-//                .roles("USER")
-//                .build();
-//        System.out.println("DEBUG: SecurityConfig UserDetailsService configured with username: '" + user.getUsername() + "'");
-//        return new InMemoryUserDetailsManager(user);
-//    }
     @Bean
     public UserDetailsService userDetailsService() {
         TblConfigurationEntity configurationEntity = configurationRepository.findFirstByOrderByIdAsc();
@@ -66,13 +44,9 @@ public class SecurityConfig {
         final String encodedPassword = passwordEncoder().encode(configurationEntity.getPassword());
         final String configuredUsername = configurationEntity.getUserId();
 
-        //System.out.println("DEBUG: SecurityConfig UserDetailsService Bean initialized. Configured Username: '" + configuredUsername + "'");
-
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String inputUsername) throws UsernameNotFoundException {
-//                System.out.println("DEBUG: Anonymous UserDetailsService attempting to load username: '" + inputUsername + "' (comparing with stored: '" + configuredUsername + "')");
-
                 if (inputUsername.equals(configuredUsername)) {
                     return User.builder()
                             .username(configuredUsername)
@@ -80,7 +54,6 @@ public class SecurityConfig {
                             .roles("USER")
                             .build();
                 } else {
-//                    System.out.println("DEBUG: Username '" + inputUsername + "' not found or case mismatch.");
                     throw new UsernameNotFoundException("User not found with username: " + inputUsername);
                 }
             }

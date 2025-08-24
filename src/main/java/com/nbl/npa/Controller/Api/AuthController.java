@@ -5,6 +5,8 @@ import com.nbl.npa.Model.DTO.LoginRequest;
 import com.nbl.npa.Service.AuthenticationService;
 import com.nbl.npa.Service.NpaLogService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +22,8 @@ import java.util.Map;
 @RequestMapping(path = "/token")
 @RequiredArgsConstructor
 public class AuthController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
 
     private final AuthenticationService authenticationService;
     private final NpaLogService npaLogService;
@@ -71,7 +75,7 @@ public class AuthController {
             return ResponseEntity.status(401).body(response);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Internal server error during token generation", e);
             response.put("code", 500);
             response.put("message", "Internal Server Error");
             response.put("data", null);
